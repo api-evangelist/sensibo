@@ -1,0 +1,232 @@
+{
+  "info": {
+    "name": "Sensibo API",
+    "description": "Control Sensibo smart AC controllers and air quality monitors (pods) over REST. Base URL: https://home.sensibo.com/api/v2. Authenticate with a per-account API key generated at https://home.sensibo.com/me/api, passed as the apiKey query parameter on every request. OAuth2 is available for commercial integrations (support@sensibo.com).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://home.sensibo.com/api/v2", "type": "string" },
+    { "key": "apiKey", "value": "", "type": "string" },
+    { "key": "device_id", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get all devices",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept-Encoding", "value": "gzip" }],
+            "url": { "raw": "{{baseUrl}}/users/me/pods?apiKey={{apiKey}}&fields=*", "host": ["{{baseUrl}}"], "path": ["users", "me", "pods"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }, { "key": "fields", "value": "*" }] },
+            "description": "Lists every device (pod) enrolled on the authenticated account."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Devices",
+      "item": [
+        {
+          "name": "Get specific device info",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept-Encoding", "value": "gzip" }],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}?apiKey={{apiKey}}&fields=*", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }, { "key": "fields", "value": "*" }] },
+            "description": "Returns full detail for a single pod - model, room, status, firmware, last AC state and measurements."
+          }
+        }
+      ]
+    },
+    {
+      "name": "AC States",
+      "item": [
+        {
+          "name": "Get current and previous AC states",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/acStates?apiKey={{apiKey}}&limit=10", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "acStates"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }, { "key": "limit", "value": "10" }] },
+            "description": "Returns the recent AC state log for the pod."
+          }
+        },
+        {
+          "name": "Set the AC state",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"acState\": {\n    \"on\": true,\n    \"mode\": \"cool\",\n    \"targetTemperature\": 22,\n    \"temperatureUnit\": \"C\",\n    \"fanLevel\": \"auto\",\n    \"swing\": \"stopped\"\n  }\n}" },
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/acStates?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "acStates"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Sets a complete new AC state (power, mode, target temperature, fan, swing)."
+          }
+        },
+        {
+          "name": "Change one property of the AC state",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"newValue\": 24\n}" },
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/acStates/targetTemperature?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "acStates", "targetTemperature"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Updates a single AC state property (e.g. on, mode, targetTemperature, fanLevel, swing)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Measurements",
+      "item": [
+        {
+          "name": "Get the latest measurements",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept-Encoding", "value": "gzip" }],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/measurements?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "measurements"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Returns the latest temperature, humidity, feels-like, and (on capable hardware) air quality readings."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Historical Data",
+      "item": [
+        {
+          "name": "Get historical measurements",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept-Encoding", "value": "gzip" }],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/historicalMeasurements?apiKey={{apiKey}}&days=1", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "historicalMeasurements"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }, { "key": "days", "value": "1" }] },
+            "description": "Returns temperature and humidity history over up to seven days."
+          }
+        },
+        {
+          "name": "Get device events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/events?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "events"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Returns the device event log. Retention depends on the Sensibo Plus subscription."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Climate React",
+      "item": [
+        {
+          "name": "Get the Climate React settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/smartmode?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "smartmode"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Returns the Climate React (smart mode) configuration for the pod."
+          }
+        },
+        {
+          "name": "Enable or disable Climate React",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"enabled\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/smartmode?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "smartmode"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Turns Climate React on or off for the pod."
+          }
+        },
+        {
+          "name": "Set Climate React configuration",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"enabled\": true,\n  \"type\": \"temperature\",\n  \"lowTemperatureThreshold\": 20,\n  \"highTemperatureThreshold\": 26,\n  \"lowTemperatureState\": { \"on\": true, \"mode\": \"heat\", \"targetTemperature\": 22 },\n  \"highTemperatureState\": { \"on\": true, \"mode\": \"cool\", \"targetTemperature\": 24 }\n}" },
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/smartmode?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "smartmode"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Sets the Climate React thresholds and the AC states applied at each boundary."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Schedules",
+      "item": [
+        {
+          "name": "Get the scheduled items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/schedules?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "schedules"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Lists the recurring schedules for the pod."
+          }
+        },
+        {
+          "name": "Create a new schedule",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"targetTimeLocal\": \"18:30\",\n  \"recurringDays\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n  \"acState\": { \"on\": true, \"mode\": \"cool\", \"targetTemperature\": 23 }\n}" },
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/schedules?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "schedules"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Creates a recurring schedule that applies an AC state at a chosen time on chosen days."
+          }
+        },
+        {
+          "name": "Get a specific schedule",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/schedules/:schedule_id?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "schedules", ":schedule_id"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }], "variable": [{ "key": "schedule_id", "value": "" }] },
+            "description": "Returns a single schedule by ID."
+          }
+        },
+        {
+          "name": "Enable or disable a specific schedule",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"isEnabled\": false\n}" },
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/schedules/:schedule_id?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "schedules", ":schedule_id"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }], "variable": [{ "key": "schedule_id", "value": "" }] },
+            "description": "Enables or disables an existing schedule."
+          }
+        },
+        {
+          "name": "Delete a specific schedule",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/schedules/:schedule_id?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "schedules", ":schedule_id"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }], "variable": [{ "key": "schedule_id", "value": "" }] },
+            "description": "Deletes a schedule by ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Timers",
+      "item": [
+        {
+          "name": "Get the current timer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/timer?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "timer"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Returns the active countdown timer for the pod, if any."
+          }
+        },
+        {
+          "name": "Set a timer",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"minutesFromNow\": 30,\n  \"acState\": { \"on\": false }\n}" },
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/timer?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "timer"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Sets a one-shot countdown timer that applies an AC state after N minutes."
+          }
+        },
+        {
+          "name": "Delete a timer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pods/{{device_id}}/timer?apiKey={{apiKey}}", "host": ["{{baseUrl}}"], "path": ["pods", "{{device_id}}", "timer"], "query": [{ "key": "apiKey", "value": "{{apiKey}}" }] },
+            "description": "Clears the active countdown timer for the pod."
+          }
+        }
+      ]
+    }
+  ]
+}

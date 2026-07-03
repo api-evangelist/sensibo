@@ -1,0 +1,302 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Sensibo API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "apikey": {
+        "key": "apiKey",
+        "value": "{{apiKey}}",
+        "in": "query"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Users", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get all devices.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/users/me/pods?apiKey={{apiKey}}&fields=*",
+            "params": [
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." },
+              { "name": "fields", "value": "*", "type": "query", "description": "Fields to return, or * for all." }
+            ]
+          },
+          "docs": "Lists every device (pod) enrolled on the authenticated account."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Devices", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get specific device info.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id?apiKey={{apiKey}}&fields=*",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." },
+              { "name": "fields", "value": "*", "type": "query", "description": "Fields to return, or * for all." }
+            ]
+          },
+          "docs": "Returns full detail for a single pod - model, room, status, firmware, last AC state and measurements."
+        }
+      ]
+    },
+    {
+      "info": { "name": "AC States", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get current and previous AC states.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/acStates?apiKey={{apiKey}}&limit=10",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." },
+              { "name": "limit", "value": "10", "type": "query", "description": "Max state-log entries." }
+            ]
+          },
+          "docs": "Returns the recent AC state log for the pod."
+        },
+        {
+          "info": { "name": "Set the AC state.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/acStates?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"acState\": {\n    \"on\": true,\n    \"mode\": \"cool\",\n    \"targetTemperature\": 22,\n    \"temperatureUnit\": \"C\",\n    \"fanLevel\": \"auto\",\n    \"swing\": \"stopped\"\n  }\n}" }
+          },
+          "docs": "Sets a complete new AC state (power, mode, target temperature, fan, swing)."
+        },
+        {
+          "info": { "name": "Change one property of the AC state.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/acStates/:property?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "property", "value": "targetTemperature", "type": "path", "description": "The AC state property to change." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"newValue\": 24\n}" }
+          },
+          "docs": "Updates a single AC state property (e.g. on, mode, targetTemperature, fanLevel, swing)."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Measurements", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get the latest measurements.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/measurements?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ]
+          },
+          "docs": "Returns the latest temperature, humidity, feels-like, and (on capable hardware) air quality readings."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Historical Data", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get historical measurements.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/historicalMeasurements?apiKey={{apiKey}}&days=1",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." },
+              { "name": "days", "value": "1", "type": "query", "description": "Days of history (up to 7)." }
+            ]
+          },
+          "docs": "Returns temperature and humidity history over up to seven days."
+        },
+        {
+          "info": { "name": "Get device events.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/events?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ]
+          },
+          "docs": "Returns the device event log. Retention depends on the Sensibo Plus subscription."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Climate React", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get the Climate React settings.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/smartmode?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ]
+          },
+          "docs": "Returns the Climate React (smart mode) configuration for the pod."
+        },
+        {
+          "info": { "name": "Enable or disable Climate React.", "type": "http" },
+          "http": {
+            "method": "PUT",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/smartmode?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"enabled\": true\n}" }
+          },
+          "docs": "Turns Climate React on or off for the pod."
+        },
+        {
+          "info": { "name": "Set Climate React configuration.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/smartmode?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"enabled\": true,\n  \"type\": \"temperature\",\n  \"lowTemperatureThreshold\": 20,\n  \"highTemperatureThreshold\": 26,\n  \"lowTemperatureState\": { \"on\": true, \"mode\": \"heat\", \"targetTemperature\": 22 },\n  \"highTemperatureState\": { \"on\": true, \"mode\": \"cool\", \"targetTemperature\": 24 }\n}" }
+          },
+          "docs": "Sets the Climate React thresholds and the AC states applied at each boundary."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Schedules", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get the scheduled items.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ]
+          },
+          "docs": "Lists the recurring schedules for the pod."
+        },
+        {
+          "info": { "name": "Create a new schedule.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"targetTimeLocal\": \"18:30\",\n  \"recurringDays\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n  \"acState\": { \"on\": true, \"mode\": \"cool\", \"targetTemperature\": 23 }\n}" }
+          },
+          "docs": "Creates a recurring schedule that applies an AC state at a chosen time on chosen days."
+        },
+        {
+          "info": { "name": "Get a specific schedule.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules/:schedule_id?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "schedule_id", "value": "", "type": "path", "description": "The schedule identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ]
+          },
+          "docs": "Returns a single schedule by ID."
+        },
+        {
+          "info": { "name": "Enable or disable a specific schedule.", "type": "http" },
+          "http": {
+            "method": "PUT",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules/:schedule_id?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "schedule_id", "value": "", "type": "path", "description": "The schedule identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"isEnabled\": false\n}" }
+          },
+          "docs": "Enables or disables an existing schedule."
+        },
+        {
+          "info": { "name": "Delete a specific schedule.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules/:schedule_id?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "schedule_id", "value": "", "type": "path", "description": "The schedule identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ]
+          },
+          "docs": "Deletes a schedule by ID."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Timers", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get the current timer.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/timer?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ]
+          },
+          "docs": "Returns the active countdown timer for the pod, if any."
+        },
+        {
+          "info": { "name": "Set a timer.", "type": "http" },
+          "http": {
+            "method": "PUT",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/timer?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"minutesFromNow\": 30,\n  \"acState\": { \"on\": false }\n}" }
+          },
+          "docs": "Sets a one-shot countdown timer that applies an AC state after N minutes."
+        },
+        {
+          "info": { "name": "Delete a timer.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/timer?apiKey={{apiKey}}",
+            "params": [
+              { "name": "device_id", "value": "", "type": "path", "description": "The pod identifier." },
+              { "name": "apiKey", "value": "{{apiKey}}", "type": "query", "description": "Per-account API key." }
+            ]
+          },
+          "docs": "Clears the active countdown timer for the pod."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

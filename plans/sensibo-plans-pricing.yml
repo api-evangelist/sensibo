@@ -1,0 +1,113 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Sensibo
+providerId: sensibo
+created: '2026-07-03'
+modified: '2026-07-03'
+reconciled: false
+tags:
+- Smart Home
+- IoT
+- Air Conditioning
+- Air Quality
+- Plans
+description: >-
+  The Sensibo API itself is free to use. Any owner of a Sensibo device can
+  generate a personal API key at home.sensibo.com/me/api and control their own
+  devices over the REST API at no additional charge - there is no separate API
+  subscription or per-call fee. The commercial dimension is the hardware
+  (Sensibo Sky, Air, Air Pro, Elements) and the optional Sensibo Plus consumer
+  subscription (marketed as the Energy Saver Plan), which unlocks advanced app
+  and automation features and longer data retention. Sensibo Plus features -
+  such as extended event-log history, Climate React scheduling, weather and
+  pollution alerts, anti-mold, and auto-off - can affect how much history the
+  API returns for a device. A separate OAuth2-based commercial API program is
+  available for business integrations by contacting support@sensibo.com.
+notes: >-
+  API access is free and gated only by owning a Sensibo device and generating an
+  API key. Sensibo Plus pricing (about $2.99/month, or ~$2.49/month as the Energy
+  Saver Plan; roughly $36/year) is a consumer app subscription, not an API fee -
+  verify current pricing on sensibo.com/pages/plans and sensibo.com/pages/sensibo-plus.
+sources:
+- https://support.sensibo.com/api/
+- https://home.sensibo.com/me/api
+- https://sensibo.com/pages/plans
+- https://sensibo.com/pages/sensibo-plus
+plans:
+- id: sensibo-api-free
+  name: Sensibo API (Free)
+  type: free
+  description: >-
+    Free REST API access for any Sensibo device owner. Generate a personal API
+    key and control your own devices - read measurements, set AC state,
+    configure Climate React, and manage schedules and timers - with no extra
+    charge beyond owning the hardware.
+  entries:
+  - label: API Access
+    name: api_access
+    type: usage
+    metric: requests
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: free (rate limited; requires a Sensibo device and API key)
+    userMultiplied: false
+  elements:
+  - name: Personal API Key
+  - name: Device Control (AC States)
+  - name: Measurements and Historical Data
+  - name: Climate React
+  - name: Schedules and Timers
+- id: sensibo-plus
+  name: Sensibo Plus (Energy Saver Plan)
+  type: paid
+  description: >-
+    Optional consumer subscription that enhances the Sensibo app and automations
+    with features such as Climate React scheduling, weather and pollution alerts,
+    anti-mold, auto-off, statistics, and extended event-log history (30 days).
+    Devices remain fully usable, including real-time control and notifications,
+    without it.
+  entries:
+  - label: Subscription
+    name: sensibo_plus
+    type: flat
+    metric: subscription
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: approximately $2.99/month (~$2.49/month as Energy Saver Plan; see pricing page)
+    userMultiplied: false
+  elements:
+  - name: Extended Event Log (30 days)
+  - name: Climate React Scheduling
+  - name: Weather and Pollution Alerts
+  - name: Anti-Mold and Auto-Off
+  - name: Usage Statistics
+- id: sensibo-commercial
+  name: Commercial / OAuth2 API
+  type: enterprise
+  description: >-
+    Business integration program with OAuth2 authentication and bulk
+    (Airbend-style) operations across many devices. Terms are arranged directly
+    with Sensibo.
+  entries:
+  - label: Commercial Agreement
+    name: commercial
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact support@sensibo.com
+    userMultiplied: false
+  elements:
+  - name: OAuth2 Authentication
+  - name: Bulk / Organization Operations
+  - name: Commercial Support
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

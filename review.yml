@@ -1,0 +1,114 @@
+aid: sensibo
+name: Sensibo
+review:
+  question: Does Sensibo expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-03'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Sensibo's entire public developer
+    surface is a request/response REST API over HTTPS at
+    https://home.sensibo.com/api/v2, authenticated with an apiKey query
+    parameter. There is no server-push transport (WebSocket or SSE) exposed to
+    third-party developers to model. Applications obtain fresh device data by
+    polling the measurements and pod endpoints on an interval; Sensibo devices
+    report to the cloud on a cadence and there is no documented public
+    subscribe/stream channel.
+findings:
+  summary: |
+    Sensibo does not publish a documented public WebSocket API. Sensibo makes
+    smart AC controllers and air quality monitors (pods) - Sky, Air, Air Pro,
+    and Elements. Its public API is a REST API (base
+    https://home.sensibo.com/api/v2) authenticated with a per-account API key
+    passed as the apiKey query parameter (generated at
+    https://home.sensibo.com/me/api). The API lets developers list devices,
+    read latest and historical temperature/humidity/air-quality measurements,
+    get and set the AC state, configure Climate React (smart mode), and manage
+    schedules and timers. It is pure request/response over HTTPS. Real-time
+    freshness is achieved by polling, not by a WebSocket or SSE stream. A
+    WebSocket implementation does exist inside Sensibo's org on GitHub
+    (Sensibo/websocket_c), but that is an embedded-firmware C library for the
+    device's own cloud connectivity, not a documented public developer API.
+    OAuth2 exists for commercial integrations (contact support@sensibo.com) but
+    is still REST.
+  openSource: |
+    The Sensibo cloud API is a proprietary hosted service, not open source.
+    Sensibo publishes an official OpenAPI document (sensibo.openapi.yaml) and
+    open-source client tooling on GitHub (github.com/Sensibo), including
+    sensibo-python-sdk and a Homebridge plugin. The device control surface
+    itself remains a closed, hosted API.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://home.sensibo.com/api/v2
+      documented: true
+      note: The entire public Sensibo API. apiKey query-parameter auth; OAuth2 for commercial use.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: >-
+        No public WebSocket developer API is documented. Sensibo/websocket_c on
+        GitHub is an embedded C WebSocket library for device-to-cloud firmware,
+        not a developer-facing endpoint.
+    - protocol: Polling
+      scheme: https
+      documented: true
+      note: >-
+        Clients poll GET /pods/{id}/measurements and related endpoints on an
+        interval for fresh data; there is no server-push channel to subscribe to.
+  endpointsConfirmedRest:
+    - GET    https://home.sensibo.com/api/v2/users/me/pods
+    - GET    https://home.sensibo.com/api/v2/pods/{device_id}
+    - GET    https://home.sensibo.com/api/v2/pods/{device_id}/acStates
+    - POST   https://home.sensibo.com/api/v2/pods/{device_id}/acStates
+    - PATCH  https://home.sensibo.com/api/v2/pods/{device_id}/acStates/{property}
+    - GET    https://home.sensibo.com/api/v2/pods/{device_id}/historicalMeasurements
+    - GET    https://home.sensibo.com/api/v2/pods/{device_id}/smartmode
+    - PUT    https://home.sensibo.com/api/v2/pods/{device_id}/smartmode
+    - POST   https://home.sensibo.com/api/v2/pods/{device_id}/smartmode
+    - GET    https://home.sensibo.com/api/v2/pods/{device_id}/timer
+    - PUT    https://home.sensibo.com/api/v2/pods/{device_id}/timer
+    - DELETE https://home.sensibo.com/api/v2/pods/{device_id}/timer
+    - GET    https://home.sensibo.com/api/v2/pods/{device_id}/schedules
+    - POST   https://home.sensibo.com/api/v2/pods/{device_id}/schedules
+    - GET    https://home.sensibo.com/api/v2/pods/{device_id}/schedules/{schedule_id}
+    - PUT    https://home.sensibo.com/api/v2/pods/{device_id}/schedules/{schedule_id}
+    - DELETE https://home.sensibo.com/api/v2/pods/{device_id}/schedules/{schedule_id}
+  endpointsModeled:
+    - GET    https://home.sensibo.com/api/v2/pods/{device_id}/measurements
+    - GET    https://home.sensibo.com/api/v2/pods/{device_id}/events
+  endpointsModeledNote: >-
+      The measurements endpoint appears in Sensibo's support examples and the
+      events endpoint is described in the API documentation, but neither is
+      itemized as a distinct operation in the published OpenAPI; their exact
+      request/response schemas are modeled representatively here. All other
+      endpoints are confirmed against Sensibo's official OpenAPI
+      (sensibo.openapi.yaml). Schedules and timers are described by Sensibo as a
+      legacy ("v1") surface but are served under the same home.sensibo.com host.
+sources:
+  - url: https://support.sensibo.com/api/
+    type: Documentation
+    note: API overview - base URL https://home.sensibo.com/api/v2, apiKey query-param auth, rate limiting via 429, gzip raises limits.
+  - url: https://support.sensibo.com/getting-started/api-documentation/
+    type: Documentation
+    note: Getting-started API docs - device, AC state, measurements, events, scheduling, Climate React, Airbend bulk operations.
+  - url: https://github.com/Sensibo/sensibo.github.io2/blob/master/sensibo.openapi.yaml
+    type: OpenAPI
+    note: Sensibo's official OpenAPI (title "Sensibo API", version 2.0.0). Confirms pods, acStates, historicalMeasurements, smartmode, timer, schedules paths and apiKey security scheme.
+  - url: https://github.com/Sensibo
+    type: SourceCode
+    note: Sensibo GitHub org - sensibo-python-sdk, homebridge plugin, and websocket_c (embedded-firmware WebSocket library, not a public developer API).
+  - url: https://sensibo.com/pages/plans
+    type: Pricing
+    note: Sensibo Plus / Energy Saver Plan consumer subscription; the API itself is free.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket or other server-push protocol is documented on Sensibo's public
+    API, so no AsyncAPI document was created. Sensibo's public surface is
+    request/response REST; the apis.yml enumerates the logical REST APIs
+    (Users, Devices, AC States, Measurements, Historical Data, Climate React,
+    Schedules, Timers) and links the OpenAPI, Postman, and Open Collection
+    artifacts.

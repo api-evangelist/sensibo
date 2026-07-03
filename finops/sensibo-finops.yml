@@ -1,0 +1,83 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Sensibo
+providerId: sensibo
+created: '2026-07-03'
+modified: '2026-07-03'
+reconciled: false
+tags:
+- Smart Home
+- IoT
+- Air Conditioning
+- Air Quality
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Sensibo spend. Sensibo's REST API carries no usage-based fee -
+  it is free for any device owner with an API key - so there is no per-call or
+  per-token cloud bill to optimize on the API itself. The real cost drivers are
+  (1) one-time hardware purchases of Sensibo controllers and monitors (Sky, Air,
+  Air Pro, Elements) and (2) the optional recurring Sensibo Plus consumer
+  subscription (about $2.99/month, or ~$2.49/month as the Energy Saver Plan).
+  For most developers the API is a fixed, zero-marginal-cost integration; FinOps
+  attention belongs on subscription seats and hardware fleet size rather than API
+  metering.
+notes: >-
+  There is no metered API charge to reconcile. Track subscription seats and
+  hardware count. A commercial OAuth2 program exists for business integrations
+  (contact support@sensibo.com); its terms are negotiated and not published.
+sources:
+- https://support.sensibo.com/api/
+- https://sensibo.com/pages/plans
+- https://sensibo.com/pages/sensibo-plus
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Sensibo
+serviceCategory: Smart Home and IoT
+billingModel:
+  pricingCategory: Subscription
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+meters:
+- name: sensibo_plus_subscription
+  description: Recurring Sensibo Plus (Energy Saver Plan) consumer subscription per account.
+  unit: months
+  aggregation: sum
+  dimensions:
+  - account
+- name: hardware_units
+  description: One-time purchase of Sensibo controllers and air quality monitors.
+  unit: devices
+  aggregation: sum
+  dimensions:
+  - account
+  - model
+- name: api_requests
+  description: REST API calls - free of charge, tracked only for rate-limit and operational purposes.
+  unit: requests
+  aggregation: sum
+  dimensions:
+  - account
+  - device
+principles:
+- name: Visibility
+  description: Track subscription seats and the count of enrolled devices; API calls are free but worth monitoring against rate limits.
+- name: Allocation
+  description: Map Sensibo Plus subscriptions and hardware to the room, site, or team that owns each device.
+- name: Optimization
+  description: The API has no marginal cost; optimize by right-sizing the device fleet and only subscribing to Sensibo Plus where its features are needed.
+- name: Accountability
+  description: Assign an owner per site/account for hardware purchases and subscription renewals.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,61 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Sensibo
+providerId: sensibo
+created: '2026-07-03'
+modified: '2026-07-03'
+reconciled: false
+tags:
+- Smart Home
+- IoT
+- Air Conditioning
+- Rate Limiting
+- Quotas
+description: >-
+  Sensibo rate limits the API but does not publish a fixed numeric request cap.
+  When a client exceeds the limit the API returns HTTP 429. Sensibo's guidance
+  is that sending an `Accept-Encoding: gzip` header raises the effective limit,
+  which implies limiting is influenced by response payload volume as well as
+  request count - so clients should request only the fields they need (via the
+  `fields` parameter) and accept gzip. Historical measurements are capped at
+  seven days per request regardless of rate. Practical integrations poll
+  measurements on the order of tens of seconds to a few minutes rather than
+  continuously, since Sensibo devices report to the cloud on an interval and
+  there is no push/streaming API to subscribe to.
+notes: >-
+  No exact per-minute or per-day numeric limit is documented as of the review
+  date. Handle 429 with exponential backoff, enable gzip, use the fields
+  parameter to shrink responses, and poll on a sensible interval. Verify current
+  guidance at support.sensibo.com/api/.
+sources:
+- https://support.sensibo.com/api/
+- https://support.sensibo.com/getting-started/api-documentation/
+responseCodes:
+  throttled: 429
+limits:
+- name: API Requests
+  scope: account
+  metric: requests
+  limit: not published
+  notes: A 429 indicates the rate limit was exceeded. No fixed numeric cap is documented.
+- name: Gzip Allowance
+  scope: account
+  metric: requests
+  limit: raised with gzip
+  notes: Sending an Accept-Encoding gzip header increases the effective rate limit.
+- name: Historical Window
+  scope: request
+  metric: days
+  limit: 7
+  notes: historicalMeasurements returns at most seven days of data per request.
+policies:
+- name: Backoff Strategy
+  description: On a 429, back off exponentially with jitter and retry rather than hammering the endpoint.
+- name: Response Minimization
+  description: Use the fields query parameter and gzip compression to reduce payload size and stay within limits.
+- name: Sensible Polling
+  description: Poll measurements on an interval (tens of seconds to minutes); there is no push or streaming API to subscribe to.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
