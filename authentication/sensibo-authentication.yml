@@ -1,0 +1,17 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/sensibo-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - query
+schemes:
+- name: apiKey
+  type: apiKey
+  in: query
+  parameter: apiKey
+  description: Per-account API key generated at https://home.sensibo.com/me/api and passed as
+    the apiKey query parameter on every request.
+  sources:
+  - openapi/sensibo-openapi.yml

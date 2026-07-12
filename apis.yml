@@ -208,6 +208,10 @@ apis:
     /pods/{device_id}/timer reads the active timer, PUT sets one, and DELETE clears
     it.
 common:
+- type: DomainSecurity
+  url: security/sensibo-domain-security.yml
+- type: Authentication
+  url: authentication/sensibo-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/Sensibo
 - type: LinkedIn
@@ -222,6 +226,8 @@ common:
   url: rate-limits/sensibo-rate-limits.yml
 - type: FinOps
   url: finops/sensibo-finops.yml
+- type: Blog
+  url: https://sensibo.com/blogs/articles.atom
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
