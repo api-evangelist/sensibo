@@ -1,0 +1,13 @@
+{
+  "repo": "sensibo",
+  "feeds": [
+    {
+      "source": "https://sensibo.com/blogs/articles.atom",
+      "feed_url": "https://sensibo.com/blogs/articles.atom",
+      "title": "Sensibo - Sensibo Blog",
+      "saved": 5
+    }
+  ],
+  "fetched": "2026-07-11T11:43:46Z",
+  "post_count": 30
+}
