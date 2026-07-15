@@ -208,6 +208,8 @@ apis:
     /pods/{device_id}/timer reads the active timer, PUT sets one, and DELETE clears
     it.
 common:
+- type: AgenticAccess
+  url: agentic-access/sensibo-agentic-access.yml
 - type: DomainSecurity
   url: security/sensibo-domain-security.yml
 - type: Authentication
