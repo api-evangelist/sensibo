@@ -1,0 +1,128 @@
+openapi: 3.0.3
+info:
+  title: Sensibo AC States Measurements API
+  description: The Sensibo API gives developers full control over Sensibo smart AC controllers and air quality monitors ("pods") - Sensibo Sky, Air, Air Pro, and Elements. Over REST you can list the devices on an account, read the latest temperature, humidity, and air quality measurements, pull up to seven days of historical measurements, get and set the air conditioner state (power, mode, target temperature, fan, swing), configure the Climate React smart-mode automation, and manage schedules and timers. Authentication is a per-account API key passed as the `apiKey` query parameter, generated at https://home.sensibo.com/me/api. OAuth2 is available for commercial integrations (contact support@sensibo.com). Schedules and timers are exposed by Sensibo as a legacy ("v1") surface but are served under the same home.sensibo.com host. This document is grounded in Sensibo's published OpenAPI (sensibo.openapi.yaml) and support documentation; request and response schemas are modeled representatively.
+  version: 2.0.0
+  contact:
+    name: Sensibo Support
+    url: https://support.sensibo.com/api/
+    email: support@sensibo.com
+  license:
+    name: Proprietary
+    url: https://sensibo.com/pages/terms-of-service
+servers:
+- url: https://home.sensibo.com/api/v2
+  description: Sensibo API v2
+security:
+- apiKey: []
+tags:
+- name: Measurements
+  description: Latest temperature, humidity, and air quality readings.
+paths:
+  /pods/{device_id}/measurements:
+    get:
+      operationId: getMeasurements
+      tags:
+      - Measurements
+      summary: Get the latest measurements
+      description: Returns the most recent sensor readings for the pod - temperature, relative humidity, and feels-like, plus air quality signals (TVOC, CO2, particulate matter) on air-quality-capable hardware such as Air Pro and Elements, and RSSI/battery where present.
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: The latest measurements.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Measurement'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid apiKey.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Measurement:
+      type: object
+      description: A sensor reading from a pod.
+      properties:
+        time:
+          type: string
+          format: date-time
+        temperature:
+          type: number
+          example: 23.4
+        humidity:
+          type: number
+          example: 48
+        feelsLike:
+          type: number
+          example: 23.9
+        tvoc:
+          type: number
+          description: Total volatile organic compounds (air-quality hardware only).
+          example: 120
+        co2:
+          type: number
+          description: Carbon dioxide in ppm (air-quality hardware only).
+          example: 640
+        pm25:
+          type: number
+          description: Particulate matter 2.5 (air-quality hardware only).
+          example: 8
+        rssi:
+          type: integer
+        battery:
+          type: number
+          nullable: true
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: failure
+        reason:
+          type: string
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
+    Fields:
+      name: fields
+      in: query
+      required: false
+      description: Comma-separated list of fields to include in the response, or `*` for all fields.
+      schema:
+        type: string
+        example: '*'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: query
+      name: apiKey
+      description: Per-account API key generated at https://home.sensibo.com/me/api and passed as the apiKey query parameter on every request.

@@ -1,0 +1,215 @@
+openapi: 3.0.3
+info:
+  title: Sensibo AC States Climate React API
+  description: The Sensibo API gives developers full control over Sensibo smart AC controllers and air quality monitors ("pods") - Sensibo Sky, Air, Air Pro, and Elements. Over REST you can list the devices on an account, read the latest temperature, humidity, and air quality measurements, pull up to seven days of historical measurements, get and set the air conditioner state (power, mode, target temperature, fan, swing), configure the Climate React smart-mode automation, and manage schedules and timers. Authentication is a per-account API key passed as the `apiKey` query parameter, generated at https://home.sensibo.com/me/api. OAuth2 is available for commercial integrations (contact support@sensibo.com). Schedules and timers are exposed by Sensibo as a legacy ("v1") surface but are served under the same home.sensibo.com host. This document is grounded in Sensibo's published OpenAPI (sensibo.openapi.yaml) and support documentation; request and response schemas are modeled representatively.
+  version: 2.0.0
+  contact:
+    name: Sensibo Support
+    url: https://support.sensibo.com/api/
+    email: support@sensibo.com
+  license:
+    name: Proprietary
+    url: https://sensibo.com/pages/terms-of-service
+servers:
+- url: https://home.sensibo.com/api/v2
+  description: Sensibo API v2
+security:
+- apiKey: []
+tags:
+- name: Climate React
+  description: Smart-mode automation driven by temperature and humidity thresholds.
+paths:
+  /pods/{device_id}/smartmode:
+    get:
+      operationId: getClimateReact
+      tags:
+      - Climate React
+      summary: Get the Climate React settings
+      description: Returns the Climate React (smart mode) configuration for the pod.
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: The Climate React configuration.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/ClimateReact'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    put:
+      operationId: toggleClimateReact
+      tags:
+      - Climate React
+      summary: Enable or disable Climate React
+      description: Turns the Climate React automation on or off for the pod.
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+              example:
+                enabled: true
+      responses:
+        '200':
+          description: The updated enabled state.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      operationId: setClimateReact
+      tags:
+      - Climate React
+      summary: Set Climate React configuration
+      description: Sets the Climate React thresholds and the AC states to apply when the measured value crosses the low or high boundary.
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClimateReact'
+            example:
+              enabled: true
+              type: temperature
+              lowTemperatureThreshold: 20
+              highTemperatureThreshold: 26
+              lowTemperatureState:
+                'on': true
+                mode: heat
+                targetTemperature: 22
+              highTemperatureState:
+                'on': true
+                mode: cool
+                targetTemperature: 24
+      responses:
+        '200':
+          description: The stored Climate React configuration.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/ClimateReact'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid apiKey.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
+  schemas:
+    AcState:
+      type: object
+      description: The state of the air conditioner.
+      properties:
+        'on':
+          type: boolean
+        mode:
+          type: string
+          description: Operating mode.
+          example: cool
+          enum:
+          - cool
+          - heat
+          - fan
+          - dry
+          - auto
+        targetTemperature:
+          type: number
+          example: 22
+        temperatureUnit:
+          type: string
+          enum:
+          - C
+          - F
+          example: C
+        fanLevel:
+          type: string
+          example: auto
+        swing:
+          type: string
+          example: stopped
+    ClimateReact:
+      type: object
+      description: Climate React (smart mode) configuration.
+      properties:
+        enabled:
+          type: boolean
+        type:
+          type: string
+          description: The measurement Climate React reacts to.
+          enum:
+          - temperature
+          - humidity
+          - feelsLike
+          example: temperature
+        lowTemperatureThreshold:
+          type: number
+        highTemperatureThreshold:
+          type: number
+        lowTemperatureState:
+          $ref: '#/components/schemas/AcState'
+        highTemperatureState:
+          $ref: '#/components/schemas/AcState'
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: failure
+        reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: query
+      name: apiKey
+      description: Per-account API key generated at https://home.sensibo.com/me/api and passed as the apiKey query parameter on every request.

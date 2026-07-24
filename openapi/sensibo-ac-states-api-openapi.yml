@@ -1,0 +1,224 @@
+openapi: 3.0.3
+info:
+  title: Sensibo AC States API
+  description: The Sensibo API gives developers full control over Sensibo smart AC controllers and air quality monitors ("pods") - Sensibo Sky, Air, Air Pro, and Elements. Over REST you can list the devices on an account, read the latest temperature, humidity, and air quality measurements, pull up to seven days of historical measurements, get and set the air conditioner state (power, mode, target temperature, fan, swing), configure the Climate React smart-mode automation, and manage schedules and timers. Authentication is a per-account API key passed as the `apiKey` query parameter, generated at https://home.sensibo.com/me/api. OAuth2 is available for commercial integrations (contact support@sensibo.com). Schedules and timers are exposed by Sensibo as a legacy ("v1") surface but are served under the same home.sensibo.com host. This document is grounded in Sensibo's published OpenAPI (sensibo.openapi.yaml) and support documentation; request and response schemas are modeled representatively.
+  version: 2.0.0
+  contact:
+    name: Sensibo Support
+    url: https://support.sensibo.com/api/
+    email: support@sensibo.com
+  license:
+    name: Proprietary
+    url: https://sensibo.com/pages/terms-of-service
+servers:
+- url: https://home.sensibo.com/api/v2
+  description: Sensibo API v2
+security:
+- apiKey: []
+tags:
+- name: AC States
+  description: Read and command the air conditioner state.
+paths:
+  /pods/{device_id}/acStates:
+    get:
+      operationId: getAcStates
+      tags:
+      - AC States
+      summary: Get current and previous AC states
+      description: Returns the log of recent AC states for the pod, most recent first.
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      - name: limit
+        in: query
+        required: false
+        description: Maximum number of state-log entries to return.
+        schema:
+          type: integer
+          default: 10
+      responses:
+        '200':
+          description: The AC state log.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AcStateLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      operationId: setAcState
+      tags:
+      - AC States
+      summary: Set the AC state
+      description: Sets a complete new AC state for the pod - power, mode, target temperature, fan level, and swing.
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                acState:
+                  $ref: '#/components/schemas/AcState'
+            example:
+              acState:
+                'on': true
+                mode: cool
+                targetTemperature: 22
+                temperatureUnit: C
+                fanLevel: auto
+                swing: stopped
+      responses:
+        '200':
+          description: The applied AC state.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/AcStateLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/acStates/{property}:
+    patch:
+      operationId: patchAcStateProperty
+      tags:
+      - AC States
+      summary: Change only one property of the AC state
+      description: Updates a single AC state property (for example `on`, `mode`, `targetTemperature`, `fanLevel`, or `swing`) without resending the whole state.
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      - name: property
+        in: path
+        required: true
+        description: The AC state property to change.
+        schema:
+          type: string
+          example: targetTemperature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newValue:
+                  description: The new value for the property.
+              example:
+                newValue: 24
+      responses:
+        '200':
+          description: The updated AC state.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/AcStateLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid apiKey.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
+  schemas:
+    AcStateLogEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        time:
+          type: string
+          format: date-time
+        acState:
+          $ref: '#/components/schemas/AcState'
+        changedProperties:
+          type: array
+          items:
+            type: string
+    AcState:
+      type: object
+      description: The state of the air conditioner.
+      properties:
+        'on':
+          type: boolean
+        mode:
+          type: string
+          description: Operating mode.
+          example: cool
+          enum:
+          - cool
+          - heat
+          - fan
+          - dry
+          - auto
+        targetTemperature:
+          type: number
+          example: 22
+        temperatureUnit:
+          type: string
+          enum:
+          - C
+          - F
+          example: C
+        fanLevel:
+          type: string
+          example: auto
+        swing:
+          type: string
+          example: stopped
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: failure
+        reason:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: query
+      name: apiKey
+      description: Per-account API key generated at https://home.sensibo.com/me/api and passed as the apiKey query parameter on every request.

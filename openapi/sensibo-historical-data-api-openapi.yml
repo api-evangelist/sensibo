@@ -1,0 +1,137 @@
+openapi: 3.0.3
+info:
+  title: Sensibo AC States Historical Data API
+  description: The Sensibo API gives developers full control over Sensibo smart AC controllers and air quality monitors ("pods") - Sensibo Sky, Air, Air Pro, and Elements. Over REST you can list the devices on an account, read the latest temperature, humidity, and air quality measurements, pull up to seven days of historical measurements, get and set the air conditioner state (power, mode, target temperature, fan, swing), configure the Climate React smart-mode automation, and manage schedules and timers. Authentication is a per-account API key passed as the `apiKey` query parameter, generated at https://home.sensibo.com/me/api. OAuth2 is available for commercial integrations (contact support@sensibo.com). Schedules and timers are exposed by Sensibo as a legacy ("v1") surface but are served under the same home.sensibo.com host. This document is grounded in Sensibo's published OpenAPI (sensibo.openapi.yaml) and support documentation; request and response schemas are modeled representatively.
+  version: 2.0.0
+  contact:
+    name: Sensibo Support
+    url: https://support.sensibo.com/api/
+    email: support@sensibo.com
+  license:
+    name: Proprietary
+    url: https://sensibo.com/pages/terms-of-service
+servers:
+- url: https://home.sensibo.com/api/v2
+  description: Sensibo API v2
+security:
+- apiKey: []
+tags:
+- name: Historical Data
+  description: Time-series measurements and the device event log.
+paths:
+  /pods/{device_id}/historicalMeasurements:
+    get:
+      operationId: getHistoricalMeasurements
+      tags:
+      - Historical Data
+      summary: Get historical measurements
+      description: Returns time-series temperature and humidity (and air quality where available) for the pod over a requested window of up to seven days.
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      - name: days
+        in: query
+        required: false
+        description: Number of days of history to return (up to 7).
+        schema:
+          type: integer
+          default: 1
+          maximum: 7
+      responses:
+        '200':
+          description: Historical measurement series.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: object
+                    properties:
+                      temperature:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/HistoricalPoint'
+                      humidity:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/HistoricalPoint'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/events:
+    get:
+      operationId: getEvents
+      tags:
+      - Historical Data
+      summary: Get device events
+      description: Returns the device event log (state changes, connectivity, alerts). Event-log retention depends on the account's Sensibo Plus subscription.
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: The device event log.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid apiKey.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    HistoricalPoint:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+        value:
+          type: number
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: failure
+        reason:
+          type: string
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: query
+      name: apiKey
+      description: Per-account API key generated at https://home.sensibo.com/me/api and passed as the apiKey query parameter on every request.
