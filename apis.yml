@@ -12,7 +12,20 @@ description: Sensibo builds smart air conditioning controllers and indoor air qu
   managing schedules and timers. Authentication is a per-account API key passed as
   an apiKey query parameter, generated from home.sensibo.com/me/api. OAuth2 is
   available for commercial integrations.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/sensibo.png
 tags:
 - Smart Home
 - IoT
@@ -25,188 +38,150 @@ created: '2026-07-03'
 modified: '2026-07-03'
 specificationVersion: '0.19'
 apis:
-- aid: sensibo:sensibo-users-api
-  name: Sensibo Users API
-  tags:
-  - Users
-  - Account
-  - Devices
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://support.sensibo.com/api/
-  baseURL: https://home.sensibo.com/api/v2
-  properties:
-  - url: https://support.sensibo.com/api/
-    type: Documentation
-  - url: https://support.sensibo.com/getting-started/api-documentation/
-    type: APIReference
-  - url: openapi/sensibo-openapi.yml
-    type: OpenAPI
-  - url: collections/sensibo.postman_collection.json
-    type: PostmanCollection
-  - url: collections/sensibo.opencollection.json
-    type: OpenCollection
-  description: The account entry point. List every device (pod) enrolled on the
-    authenticated Sensibo account via GET /users/me/pods, optionally selecting
-    which fields to return with the fields query parameter. This is how an
-    integration discovers the pod IDs it will control with the other APIs.
-- aid: sensibo:sensibo-devices-api
-  name: Sensibo Devices API
-  tags:
-  - Devices
-  - Pods
-  - Status
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://support.sensibo.com/api/
-  baseURL: https://home.sensibo.com/api/v2
-  properties:
-  - url: https://support.sensibo.com/api/
-    type: Documentation
-  - url: openapi/sensibo-openapi.yml
-    type: OpenAPI
-  - url: collections/sensibo.postman_collection.json
-    type: PostmanCollection
-  - url: collections/sensibo.opencollection.json
-    type: OpenCollection
-  description: Retrieve full detail for a single device (pod) via GET
-    /pods/{device_id} - product model, room name, connection status, firmware
-    version, capabilities, and the last known AC state and measurements. Use the
-    fields parameter to trim the response to only the properties you need.
 - aid: sensibo:sensibo-ac-states-api
   name: Sensibo AC States API
-  tags:
-  - AC State
-  - Control
-  - Power
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  description: Read and command the air conditioner state.
   humanURL: https://support.sensibo.com/api/
   baseURL: https://home.sensibo.com/api/v2
-  properties:
-  - url: https://support.sensibo.com/api/
-    type: Documentation
-  - url: openapi/sensibo-openapi.yml
-    type: OpenAPI
-  - url: collections/sensibo.postman_collection.json
-    type: PostmanCollection
-  - url: collections/sensibo.opencollection.json
-    type: OpenCollection
-  description: Read and command the air conditioner state. GET
-    /pods/{device_id}/acStates returns the current and previous states; POST sets a
-    complete new state (on/off, mode, target temperature, fan level, swing); and
-    PATCH /pods/{device_id}/acStates/{property} changes a single property such as
-    turning the unit on or bumping the target temperature.
-- aid: sensibo:sensibo-measurements-api
-  name: Sensibo Measurements API
   tags:
-  - Measurements
-  - Temperature
-  - Humidity
-  - Air Quality
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://support.sensibo.com/api/
-  baseURL: https://home.sensibo.com/api/v2
+  - AC States
   properties:
-  - url: https://support.sensibo.com/api/
-    type: Documentation
-  - url: openapi/sensibo-openapi.yml
-    type: OpenAPI
-  - url: collections/sensibo.postman_collection.json
-    type: PostmanCollection
-  - url: collections/sensibo.opencollection.json
-    type: OpenCollection
-  description: Read the latest sensor readings for a pod via GET
-    /pods/{device_id}/measurements - temperature, relative humidity, feels-like, and
-    on air-quality-capable hardware (Air Pro, Elements) indoor air quality signals
-    such as TVOC, CO2, and particulate matter, plus RSSI and battery.
-- aid: sensibo:sensibo-historical-data-api
-  name: Sensibo Historical Data API
-  tags:
-  - Historical Data
-  - Time Series
-  - Events
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://support.sensibo.com/api/
-  baseURL: https://home.sensibo.com/api/v2
-  properties:
-  - url: https://support.sensibo.com/api/
-    type: Documentation
-  - url: openapi/sensibo-openapi.yml
-    type: OpenAPI
-  - url: collections/sensibo.postman_collection.json
-    type: PostmanCollection
-  - url: collections/sensibo.opencollection.json
-    type: OpenCollection
-  description: Pull time-series history for a pod. GET
-    /pods/{device_id}/historicalMeasurements returns temperature and humidity (and
-    air quality where available) over a requested window of up to seven days, and
-    GET /pods/{device_id}/events returns the device event log. Event-log retention
-    depends on the account's Sensibo Plus subscription.
+  - type: OpenAPI
+    url: openapi/sensibo-ac-states-api-openapi.yml
+  - type: Documentation
+    url: https://support.sensibo.com/api/
+  - type: APIReference
+    url: https://support.sensibo.com/getting-started/api-documentation/
+  - type: PostmanCollection
+    url: collections/sensibo.postman_collection.json
+  - type: OpenCollection
+    url: collections/sensibo.opencollection.json
 - aid: sensibo:sensibo-climate-react-api
   name: Sensibo Climate React API
+  description: Smart-mode automation driven by temperature and humidity thresholds.
+  humanURL: https://support.sensibo.com/api/
+  baseURL: https://home.sensibo.com/api/v2
   tags:
   - Climate React
-  - Smart Mode
-  - Automation
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  properties:
+  - type: OpenAPI
+    url: openapi/sensibo-climate-react-api-openapi.yml
+  - type: Documentation
+    url: https://support.sensibo.com/api/
+  - type: APIReference
+    url: https://support.sensibo.com/getting-started/api-documentation/
+  - type: PostmanCollection
+    url: collections/sensibo.postman_collection.json
+  - type: OpenCollection
+    url: collections/sensibo.opencollection.json
+- aid: sensibo:sensibo-devices-api
+  name: Sensibo Devices API
+  description: Individual device (pod) detail and status.
   humanURL: https://support.sensibo.com/api/
   baseURL: https://home.sensibo.com/api/v2
+  tags:
+  - Devices
   properties:
-  - url: https://support.sensibo.com/api/
-    type: Documentation
-  - url: openapi/sensibo-openapi.yml
-    type: OpenAPI
-  - url: collections/sensibo.postman_collection.json
-    type: PostmanCollection
-  - url: collections/sensibo.opencollection.json
-    type: OpenCollection
-  description: Configure Climate React, Sensibo's smart-mode automation that turns
-    the AC on or off and adjusts settings when measured temperature or humidity
-    crosses a threshold. GET /pods/{device_id}/smartmode reads the configuration,
-    PUT enables or disables it, and POST sets the low/high thresholds and the AC
-    states to apply at each boundary.
+  - type: OpenAPI
+    url: openapi/sensibo-devices-api-openapi.yml
+  - type: Documentation
+    url: https://support.sensibo.com/api/
+  - type: APIReference
+    url: https://support.sensibo.com/getting-started/api-documentation/
+  - type: PostmanCollection
+    url: collections/sensibo.postman_collection.json
+  - type: OpenCollection
+    url: collections/sensibo.opencollection.json
+- aid: sensibo:sensibo-historical-data-api
+  name: Sensibo Historical Data API
+  description: Time-series measurements and the device event log.
+  humanURL: https://support.sensibo.com/api/
+  baseURL: https://home.sensibo.com/api/v2
+  tags:
+  - Historical Data
+  properties:
+  - type: OpenAPI
+    url: openapi/sensibo-historical-data-api-openapi.yml
+  - type: Documentation
+    url: https://support.sensibo.com/api/
+  - type: APIReference
+    url: https://support.sensibo.com/getting-started/api-documentation/
+  - type: PostmanCollection
+    url: collections/sensibo.postman_collection.json
+  - type: OpenCollection
+    url: collections/sensibo.opencollection.json
+- aid: sensibo:sensibo-measurements-api
+  name: Sensibo Measurements API
+  description: Latest temperature, humidity, and air quality readings.
+  humanURL: https://support.sensibo.com/api/
+  baseURL: https://home.sensibo.com/api/v2
+  tags:
+  - Measurements
+  properties:
+  - type: OpenAPI
+    url: openapi/sensibo-measurements-api-openapi.yml
+  - type: Documentation
+    url: https://support.sensibo.com/api/
+  - type: APIReference
+    url: https://support.sensibo.com/getting-started/api-documentation/
+  - type: PostmanCollection
+    url: collections/sensibo.postman_collection.json
+  - type: OpenCollection
+    url: collections/sensibo.opencollection.json
 - aid: sensibo:sensibo-schedules-api
   name: Sensibo Schedules API
+  description: Recurring day-and-time AC state schedules.
+  humanURL: https://support.sensibo.com/api/
+  baseURL: https://home.sensibo.com/api/v2
   tags:
   - Schedules
-  - Automation
-  - Scheduling
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://support.sensibo.com/api/
-  baseURL: https://home.sensibo.com/api/v2
   properties:
-  - url: https://support.sensibo.com/api/
-    type: Documentation
-  - url: openapi/sensibo-openapi.yml
-    type: OpenAPI
-  - url: collections/sensibo.postman_collection.json
-    type: PostmanCollection
-  - url: collections/sensibo.opencollection.json
-    type: OpenCollection
-  description: Create and manage recurring schedules that apply a target AC state at
-    a chosen time on chosen days of the week. List and create schedules under
-    /pods/{device_id}/schedules, and get, enable/disable, or delete a specific one
-    under /pods/{device_id}/schedules/{schedule_id}.
+  - type: OpenAPI
+    url: openapi/sensibo-schedules-api-openapi.yml
+  - type: Documentation
+    url: https://support.sensibo.com/api/
+  - type: APIReference
+    url: https://support.sensibo.com/getting-started/api-documentation/
+  - type: PostmanCollection
+    url: collections/sensibo.postman_collection.json
+  - type: OpenCollection
+    url: collections/sensibo.opencollection.json
 - aid: sensibo:sensibo-timers-api
   name: Sensibo Timers API
-  tags:
-  - Timers
-  - Countdown
-  - Automation
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  description: One-shot countdown timers that apply an AC state.
   humanURL: https://support.sensibo.com/api/
   baseURL: https://home.sensibo.com/api/v2
+  tags:
+  - Timers
   properties:
-  - url: https://support.sensibo.com/api/
-    type: Documentation
-  - url: openapi/sensibo-openapi.yml
-    type: OpenAPI
-  - url: collections/sensibo.postman_collection.json
-    type: PostmanCollection
-  - url: collections/sensibo.opencollection.json
-    type: OpenCollection
-  description: Set a one-shot countdown timer that applies a target AC state after a
-    number of minutes - the classic "turn the AC off in 30 minutes" behavior. GET
-    /pods/{device_id}/timer reads the active timer, PUT sets one, and DELETE clears
-    it.
+  - type: OpenAPI
+    url: openapi/sensibo-timers-api-openapi.yml
+  - type: Documentation
+    url: https://support.sensibo.com/api/
+  - type: APIReference
+    url: https://support.sensibo.com/getting-started/api-documentation/
+  - type: PostmanCollection
+    url: collections/sensibo.postman_collection.json
+  - type: OpenCollection
+    url: collections/sensibo.opencollection.json
+- aid: sensibo:sensibo-users-api
+  name: Sensibo Users API
+  description: Account-level access to the devices enrolled on a Sensibo account.
+  humanURL: https://support.sensibo.com/api/
+  baseURL: https://home.sensibo.com/api/v2
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/sensibo-users-api-openapi.yml
+  - type: Documentation
+    url: https://support.sensibo.com/api/
+  - type: APIReference
+    url: https://support.sensibo.com/getting-started/api-documentation/
+  - type: PostmanCollection
+    url: collections/sensibo.postman_collection.json
+  - type: OpenCollection
+    url: collections/sensibo.opencollection.json
 common:
 - type: AgenticAccess
   url: agentic-access/sensibo-agentic-access.yml
