@@ -1,0 +1,28 @@
+{
+  "provider": "sensibo",
+  "sources": [
+    "sensibo-ac-states-api-openapi.yml",
+    "sensibo-climate-react-api-openapi.yml",
+    "sensibo-devices-api-openapi.yml",
+    "sensibo-historical-data-api-openapi.yml",
+    "sensibo-measurements-api-openapi.yml",
+    "sensibo-schedules-api-openapi.yml",
+    "sensibo-timers-api-openapi.yml",
+    "sensibo-users-api-openapi.yml"
+  ],
+  "outputs": [
+    "sensibo-ac-states-api-openapi.yml",
+    "sensibo-climate-react-api-openapi.yml",
+    "sensibo-devices-api-openapi.yml",
+    "sensibo-historical-data-api-openapi.yml",
+    "sensibo-measurements-api-openapi.yml",
+    "sensibo-schedules-api-openapi.yml",
+    "sensibo-timers-api-openapi.yml",
+    "sensibo-users-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

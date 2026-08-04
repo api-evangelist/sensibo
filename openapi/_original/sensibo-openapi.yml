@@ -1,0 +1,931 @@
+openapi: 3.0.3
+info:
+  title: Sensibo API
+  description: >-
+    The Sensibo API gives developers full control over Sensibo smart AC
+    controllers and air quality monitors ("pods") - Sensibo Sky, Air, Air Pro,
+    and Elements. Over REST you can list the devices on an account, read the
+    latest temperature, humidity, and air quality measurements, pull up to seven
+    days of historical measurements, get and set the air conditioner state
+    (power, mode, target temperature, fan, swing), configure the Climate React
+    smart-mode automation, and manage schedules and timers. Authentication is a
+    per-account API key passed as the `apiKey` query parameter, generated at
+    https://home.sensibo.com/me/api. OAuth2 is available for commercial
+    integrations (contact support@sensibo.com). Schedules and timers are exposed
+    by Sensibo as a legacy ("v1") surface but are served under the same
+    home.sensibo.com host. This document is grounded in Sensibo's published
+    OpenAPI (sensibo.openapi.yaml) and support documentation; request and
+    response schemas are modeled representatively.
+  version: 2.0.0
+  contact:
+    name: Sensibo Support
+    url: https://support.sensibo.com/api/
+    email: support@sensibo.com
+  license:
+    name: Proprietary
+    url: https://sensibo.com/pages/terms-of-service
+servers:
+  - url: https://home.sensibo.com/api/v2
+    description: Sensibo API v2
+security:
+  - apiKey: []
+tags:
+  - name: Users
+    description: Account-level access to the devices enrolled on a Sensibo account.
+  - name: Devices
+    description: Individual device (pod) detail and status.
+  - name: AC States
+    description: Read and command the air conditioner state.
+  - name: Measurements
+    description: Latest temperature, humidity, and air quality readings.
+  - name: Historical Data
+    description: Time-series measurements and the device event log.
+  - name: Climate React
+    description: Smart-mode automation driven by temperature and humidity thresholds.
+  - name: Schedules
+    description: Recurring day-and-time AC state schedules.
+  - name: Timers
+    description: One-shot countdown timers that apply an AC state.
+paths:
+  /users/me/pods:
+    get:
+      operationId: listPods
+      tags:
+        - Users
+      summary: Get all devices
+      description: >-
+        Lists every device (pod) enrolled on the authenticated account. Use the
+        `fields` parameter to control which properties are returned (for example
+        `fields=id,room,acState` or `fields=*` for everything).
+      parameters:
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: A list of the account's pods.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pod'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}:
+    get:
+      operationId: getPod
+      tags:
+        - Devices
+      summary: Get specific device info
+      description: >-
+        Returns full detail for a single pod - model, room, connection status,
+        firmware, capabilities, and the last known AC state and measurements.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: The requested pod.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/Pod'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/acStates:
+    get:
+      operationId: getAcStates
+      tags:
+        - AC States
+      summary: Get current and previous AC states
+      description: Returns the log of recent AC states for the pod, most recent first.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of state-log entries to return.
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: The AC state log.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AcStateLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      operationId: setAcState
+      tags:
+        - AC States
+      summary: Set the AC state
+      description: >-
+        Sets a complete new AC state for the pod - power, mode, target
+        temperature, fan level, and swing.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                acState:
+                  $ref: '#/components/schemas/AcState'
+            example:
+              acState:
+                "on": true
+                mode: cool
+                targetTemperature: 22
+                temperatureUnit: C
+                fanLevel: auto
+                swing: stopped
+      responses:
+        '200':
+          description: The applied AC state.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/AcStateLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/acStates/{property}:
+    patch:
+      operationId: patchAcStateProperty
+      tags:
+        - AC States
+      summary: Change only one property of the AC state
+      description: >-
+        Updates a single AC state property (for example `on`, `mode`,
+        `targetTemperature`, `fanLevel`, or `swing`) without resending the whole
+        state.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+        - name: property
+          in: path
+          required: true
+          description: The AC state property to change.
+          schema:
+            type: string
+            example: targetTemperature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newValue:
+                  description: The new value for the property.
+              example:
+                newValue: 24
+      responses:
+        '200':
+          description: The updated AC state.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/AcStateLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/measurements:
+    get:
+      operationId: getMeasurements
+      tags:
+        - Measurements
+      summary: Get the latest measurements
+      description: >-
+        Returns the most recent sensor readings for the pod - temperature,
+        relative humidity, and feels-like, plus air quality signals (TVOC, CO2,
+        particulate matter) on air-quality-capable hardware such as Air Pro and
+        Elements, and RSSI/battery where present.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: The latest measurements.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Measurement'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/historicalMeasurements:
+    get:
+      operationId: getHistoricalMeasurements
+      tags:
+        - Historical Data
+      summary: Get historical measurements
+      description: >-
+        Returns time-series temperature and humidity (and air quality where
+        available) for the pod over a requested window of up to seven days.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+        - name: days
+          in: query
+          required: false
+          description: Number of days of history to return (up to 7).
+          schema:
+            type: integer
+            default: 1
+            maximum: 7
+      responses:
+        '200':
+          description: Historical measurement series.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: object
+                    properties:
+                      temperature:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/HistoricalPoint'
+                      humidity:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/HistoricalPoint'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/events:
+    get:
+      operationId: getEvents
+      tags:
+        - Historical Data
+      summary: Get device events
+      description: >-
+        Returns the device event log (state changes, connectivity, alerts).
+        Event-log retention depends on the account's Sensibo Plus subscription.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: The device event log.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/smartmode:
+    get:
+      operationId: getClimateReact
+      tags:
+        - Climate React
+      summary: Get the Climate React settings
+      description: Returns the Climate React (smart mode) configuration for the pod.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: The Climate React configuration.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/ClimateReact'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    put:
+      operationId: toggleClimateReact
+      tags:
+        - Climate React
+      summary: Enable or disable Climate React
+      description: Turns the Climate React automation on or off for the pod.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+              example:
+                enabled: true
+      responses:
+        '200':
+          description: The updated enabled state.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      operationId: setClimateReact
+      tags:
+        - Climate React
+      summary: Set Climate React configuration
+      description: >-
+        Sets the Climate React thresholds and the AC states to apply when the
+        measured value crosses the low or high boundary.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClimateReact'
+            example:
+              enabled: true
+              type: temperature
+              lowTemperatureThreshold: 20
+              highTemperatureThreshold: 26
+              lowTemperatureState:
+                "on": true
+                mode: heat
+                targetTemperature: 22
+              highTemperatureState:
+                "on": true
+                mode: cool
+                targetTemperature: 24
+      responses:
+        '200':
+          description: The stored Climate React configuration.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/ClimateReact'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/schedules:
+    get:
+      operationId: listSchedules
+      tags:
+        - Schedules
+      summary: Get the scheduled items
+      description: Lists the recurring schedules configured for the pod.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: The pod's schedules.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Schedule'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      operationId: createSchedule
+      tags:
+        - Schedules
+      summary: Create a new schedule
+      description: >-
+        Creates a recurring schedule that applies a target AC state at a chosen
+        time on chosen days of the week.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Schedule'
+            example:
+              targetTimeLocal: '18:30'
+              recurringDays:
+                - Monday
+                - Tuesday
+                - Wednesday
+                - Thursday
+                - Friday
+              acState:
+                "on": true
+                mode: cool
+                targetTemperature: 23
+      responses:
+        '200':
+          description: The created schedule.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/Schedule'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/schedules/{schedule_id}:
+    get:
+      operationId: getSchedule
+      tags:
+        - Schedules
+      summary: Get a specific schedule
+      description: Returns a single schedule by ID.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+        - $ref: '#/components/parameters/ScheduleId'
+      responses:
+        '200':
+          description: The requested schedule.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/Schedule'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    put:
+      operationId: toggleSchedule
+      tags:
+        - Schedules
+      summary: Enable or disable a specific schedule
+      description: Enables or disables an existing schedule.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+        - $ref: '#/components/parameters/ScheduleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isEnabled:
+                  type: boolean
+              example:
+                isEnabled: false
+      responses:
+        '200':
+          description: The updated schedule.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    delete:
+      operationId: deleteSchedule
+      tags:
+        - Schedules
+      summary: Delete a specific schedule
+      description: Deletes a schedule by ID.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+        - $ref: '#/components/parameters/ScheduleId'
+      responses:
+        '200':
+          description: The schedule was deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /pods/{device_id}/timer:
+    get:
+      operationId: getTimer
+      tags:
+        - Timers
+      summary: Get the current timer
+      description: Returns the active countdown timer for the pod, if any.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: The active timer.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    $ref: '#/components/schemas/Timer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    put:
+      operationId: setTimer
+      tags:
+        - Timers
+      summary: Set a timer
+      description: >-
+        Sets a one-shot countdown timer that applies a target AC state after a
+        number of minutes.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Timer'
+            example:
+              minutesFromNow: 30
+              acState:
+                "on": false
+      responses:
+        '200':
+          description: The timer was set.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    delete:
+      operationId: deleteTimer
+      tags:
+        - Timers
+      summary: Delete a timer
+      description: Clears the active countdown timer for the pod.
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: The timer was cleared.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: query
+      name: apiKey
+      description: >-
+        Per-account API key generated at https://home.sensibo.com/me/api and
+        passed as the apiKey query parameter on every request.
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
+    ScheduleId:
+      name: schedule_id
+      in: path
+      required: true
+      description: The schedule identifier.
+      schema:
+        type: string
+    Fields:
+      name: fields
+      in: query
+      required: false
+      description: >-
+        Comma-separated list of fields to include in the response, or `*` for
+        all fields.
+      schema:
+        type: string
+        example: '*'
+  responses:
+    Unauthorized:
+      description: Missing or invalid apiKey.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: >-
+        Too many requests. Requests are rate limited; a 429 indicates the limit
+        was exceeded. Sending an `Accept-Encoding: gzip` header raises the
+        effective limit.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Pod:
+      type: object
+      description: A Sensibo device (pod).
+      properties:
+        id:
+          type: string
+          description: The pod identifier used in every other endpoint.
+        room:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Living Room
+        productModel:
+          type: string
+          example: skyv2
+        firmwareVersion:
+          type: string
+        connectionStatus:
+          type: object
+          properties:
+            isAlive:
+              type: boolean
+        acState:
+          $ref: '#/components/schemas/AcState'
+        measurements:
+          $ref: '#/components/schemas/Measurement'
+    AcState:
+      type: object
+      description: The state of the air conditioner.
+      properties:
+        "on":
+          type: boolean
+        mode:
+          type: string
+          description: Operating mode.
+          example: cool
+          enum:
+            - cool
+            - heat
+            - fan
+            - dry
+            - auto
+        targetTemperature:
+          type: number
+          example: 22
+        temperatureUnit:
+          type: string
+          enum:
+            - C
+            - F
+          example: C
+        fanLevel:
+          type: string
+          example: auto
+        swing:
+          type: string
+          example: stopped
+    AcStateLogEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        time:
+          type: string
+          format: date-time
+        acState:
+          $ref: '#/components/schemas/AcState'
+        changedProperties:
+          type: array
+          items:
+            type: string
+    Measurement:
+      type: object
+      description: A sensor reading from a pod.
+      properties:
+        time:
+          type: string
+          format: date-time
+        temperature:
+          type: number
+          example: 23.4
+        humidity:
+          type: number
+          example: 48
+        feelsLike:
+          type: number
+          example: 23.9
+        tvoc:
+          type: number
+          description: Total volatile organic compounds (air-quality hardware only).
+          example: 120
+        co2:
+          type: number
+          description: Carbon dioxide in ppm (air-quality hardware only).
+          example: 640
+        pm25:
+          type: number
+          description: Particulate matter 2.5 (air-quality hardware only).
+          example: 8
+        rssi:
+          type: integer
+        battery:
+          type: number
+          nullable: true
+    HistoricalPoint:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+        value:
+          type: number
+    ClimateReact:
+      type: object
+      description: Climate React (smart mode) configuration.
+      properties:
+        enabled:
+          type: boolean
+        type:
+          type: string
+          description: The measurement Climate React reacts to.
+          enum:
+            - temperature
+            - humidity
+            - feelsLike
+          example: temperature
+        lowTemperatureThreshold:
+          type: number
+        highTemperatureThreshold:
+          type: number
+        lowTemperatureState:
+          $ref: '#/components/schemas/AcState'
+        highTemperatureState:
+          $ref: '#/components/schemas/AcState'
+    Schedule:
+      type: object
+      description: A recurring schedule that applies an AC state.
+      properties:
+        id:
+          type: string
+        isEnabled:
+          type: boolean
+        targetTimeLocal:
+          type: string
+          example: '18:30'
+        recurringDays:
+          type: array
+          items:
+            type: string
+          example:
+            - Monday
+            - Wednesday
+            - Friday
+        acState:
+          $ref: '#/components/schemas/AcState'
+    Timer:
+      type: object
+      description: A one-shot countdown timer.
+      properties:
+        id:
+          type: string
+          nullable: true
+        minutesFromNow:
+          type: integer
+          example: 30
+        targetTimeLocal:
+          type: string
+        acState:
+          $ref: '#/components/schemas/AcState'
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: failure
+        reason:
+          type: string
