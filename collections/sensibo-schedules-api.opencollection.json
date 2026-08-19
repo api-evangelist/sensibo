@@ -1,0 +1,147 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Sensibo AC States Schedules API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "apiKey",
+      "value": "{{apiKey}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Schedules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the scheduled items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              }
+            ]
+          },
+          "docs": "Lists the recurring schedules configured for the pod."
+        },
+        {
+          "info": {
+            "name": "Create a new schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a recurring schedule that applies a target AC state at a chosen time on chosen days of the week."
+        },
+        {
+          "info": {
+            "name": "Get a specific schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules/:schedule_id",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              },
+              {
+                "name": "schedule_id",
+                "value": "",
+                "type": "path",
+                "description": "The schedule identifier."
+              }
+            ]
+          },
+          "docs": "Returns a single schedule by ID."
+        },
+        {
+          "info": {
+            "name": "Enable or disable a specific schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules/:schedule_id",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              },
+              {
+                "name": "schedule_id",
+                "value": "",
+                "type": "path",
+                "description": "The schedule identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Enables or disables an existing schedule."
+        },
+        {
+          "info": {
+            "name": "Delete a specific schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/schedules/:schedule_id",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              },
+              {
+                "name": "schedule_id",
+                "value": "",
+                "type": "path",
+                "description": "The schedule identifier."
+              }
+            ]
+          },
+          "docs": "Deletes a schedule by ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,51 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Sensibo AC States Measurements API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "apiKey",
+      "value": "{{apiKey}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Measurements",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the latest measurements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/measurements",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to include in the response, or `*` for all fields."
+              }
+            ]
+          },
+          "docs": "Returns the most recent sensor readings for the pod - temperature, relative humidity, and feels-like, plus air quality signals (TVOC, CO2, particulate matter) on air-quality-capable hardware such as Air Pro and Elements, and RSSI/battery where present."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

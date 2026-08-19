@@ -1,0 +1,263 @@
+{
+  "item": [
+    {
+      "id": "c07b4ee5-ec47-4cf1-98de-7f589861fcac",
+      "name": "Measurements",
+      "description": {
+        "content": "Latest temperature, humidity, and air quality readings.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7d34e004-964e-4f94-91d2-dd5c897da94d",
+          "name": "Get the latest measurements",
+          "request": {
+            "name": "Get the latest measurements",
+            "description": {
+              "content": "Returns the most recent sensor readings for the pod - temperature, relative humidity, and feels-like, plus air quality signals (TVOC, CO2, particulate matter) on air-quality-capable hardware such as Air Pro and Elements, and RSSI/battery where present.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pods",
+                ":device_id",
+                "measurements"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fields",
+                  "value": "<string>",
+                  "description": "Comma-separated list of fields to include in the response, or `*` for all fields."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "device_id",
+                  "description": "(Required) The pod (device) identifier."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4c027ca0-7d22-425f-8813-b4bd5c103e81",
+              "name": "The latest measurements.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pods",
+                    ":device_id",
+                    "measurements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fields",
+                      "value": "*"
+                    },
+                    {
+                      "key": "apiKey",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) The pod (device) identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"success\",\n  \"result\": [\n    {\n      \"time\": \"2010-03-13T05:07:10.600Z\",\n      \"temperature\": 23.4,\n      \"humidity\": 48,\n      \"feelsLike\": 23.9,\n      \"tvoc\": 120,\n      \"co2\": 640,\n      \"pm25\": 8,\n      \"rssi\": 9805,\n      \"battery\": 2393.817957352019\n    },\n    {\n      \"time\": \"2022-07-13T23:46:09.822Z\",\n      \"temperature\": 23.4,\n      \"humidity\": 48,\n      \"feelsLike\": 23.9,\n      \"tvoc\": 120,\n      \"co2\": 640,\n      \"pm25\": 8,\n      \"rssi\": 7937,\n      \"battery\": 1198.3200889033496\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d9ac58c-76fe-4c7b-96c2-0bbea701afd5",
+              "name": "Missing or invalid apiKey.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pods",
+                    ":device_id",
+                    "measurements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fields",
+                      "value": "*"
+                    },
+                    {
+                      "key": "apiKey",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) The pod (device) identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"failure\",\n  \"reason\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "458ea21f-f75e-4beb-98b6-feac61ea5301",
+              "name": "Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pods",
+                    ":device_id",
+                    "measurements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fields",
+                      "value": "*"
+                    },
+                    {
+                      "key": "apiKey",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "device_id",
+                      "description": "(Required) The pod (device) identifier."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"failure\",\n  \"reason\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://home.sensibo.com/api/v2",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "apiKey"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "query"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "f1d9c56b-8337-47cc-8963-ae6ee15ab98b",
+    "name": "Sensibo AC States Measurements API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Sensibo API gives developers full control over Sensibo smart AC controllers and air quality monitors (\"pods\") - Sensibo Sky, Air, Air Pro, and Elements. Over REST you can list the devices on an account, read the latest temperature, humidity, and air quality measurements, pull up to seven days of historical measurements, get and set the air conditioner state (power, mode, target temperature, fan, swing), configure the Climate React smart-mode automation, and manage schedules and timers. Authentication is a per-account API key passed as the `apiKey` query parameter, generated at https://home.sensibo.com/me/api. OAuth2 is available for commercial integrations (contact support@sensibo.com). Schedules and timers are exposed by Sensibo as a legacy (\"v1\") surface but are served under the same home.sensibo.com host. This document is grounded in Sensibo's published OpenAPI (sensibo.openapi.yaml) and support documentation; request and response schemas are modeled representatively.\n\nContact Support:\n Name: Sensibo Support\n Email: support@sensibo.com",
+      "type": "text/plain"
+    }
+  }
+}

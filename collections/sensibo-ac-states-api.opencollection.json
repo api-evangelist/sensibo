@@ -1,0 +1,103 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Sensibo AC States API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "apiKey",
+      "value": "{{apiKey}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "AC States",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get current and previous AC states",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/acStates",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of state-log entries to return."
+              }
+            ]
+          },
+          "docs": "Returns the log of recent AC states for the pod, most recent first."
+        },
+        {
+          "info": {
+            "name": "Set the AC state",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/acStates",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets a complete new AC state for the pod - power, mode, target temperature, fan level, and swing."
+        },
+        {
+          "info": {
+            "name": "Change only one property of the AC state",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/acStates/:property",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              },
+              {
+                "name": "property",
+                "value": "",
+                "type": "path",
+                "description": "The AC state property to change."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a single AC state property (for example `on`, `mode`, `targetTemperature`, `fanLevel`, or `swing`) without resending the whole state."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

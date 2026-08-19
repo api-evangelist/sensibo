@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Sensibo AC States Historical Data API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "apiKey",
+      "value": "{{apiKey}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Historical Data",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get historical measurements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/historicalMeasurements",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              },
+              {
+                "name": "days",
+                "value": "",
+                "type": "query",
+                "description": "Number of days of history to return (up to 7)."
+              }
+            ]
+          },
+          "docs": "Returns time-series temperature and humidity (and air quality where available) for the pod over a requested window of up to seven days."
+        },
+        {
+          "info": {
+            "name": "Get device events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/events",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              }
+            ]
+          },
+          "docs": "Returns the device event log (state changes, connectivity, alerts). Event-log retention depends on the account's Sensibo Plus subscription."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

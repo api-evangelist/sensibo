@@ -1,0 +1,231 @@
+{
+  "item": [
+    {
+      "id": "2a979ce0-3573-40ed-bddd-e152d20a0ee3",
+      "name": "Users",
+      "description": {
+        "content": "Account-level access to the devices enrolled on a Sensibo account.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a78bc164-8fce-4026-a706-dfd7561a0d7e",
+          "name": "Get all devices",
+          "request": {
+            "name": "Get all devices",
+            "description": {
+              "content": "Lists every device (pod) enrolled on the authenticated account. Use the `fields` parameter to control which properties are returned (for example `fields=id,room,acState` or `fields=*` for everything).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "me",
+                "pods"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fields",
+                  "value": "<string>",
+                  "description": "Comma-separated list of fields to include in the response, or `*` for all fields."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "dd3b6803-3cd8-47f0-b8c7-47bd27cf574c",
+              "name": "A list of the account's pods.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "pods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fields",
+                      "value": "*"
+                    },
+                    {
+                      "key": "apiKey",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"success\",\n  \"result\": [\n    {\n      \"id\": \"string\",\n      \"room\": {\n        \"name\": \"Living Room\"\n      },\n      \"productModel\": \"skyv2\",\n      \"firmwareVersion\": \"string\",\n      \"connectionStatus\": {\n        \"isAlive\": false\n      },\n      \"acState\": {\n        \"on\": false,\n        \"mode\": \"cool\",\n        \"targetTemperature\": 22,\n        \"temperatureUnit\": \"C\",\n        \"fanLevel\": \"auto\",\n        \"swing\": \"stopped\"\n      },\n      \"measurements\": {\n        \"time\": \"2001-11-25T01:41:53.743Z\",\n        \"temperature\": 23.4,\n        \"humidity\": 48,\n        \"feelsLike\": 23.9,\n        \"tvoc\": 120,\n        \"co2\": 640,\n        \"pm25\": 8,\n        \"rssi\": 2408,\n        \"battery\": 2532.3804897734117\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"room\": {\n        \"name\": \"Living Room\"\n      },\n      \"productModel\": \"skyv2\",\n      \"firmwareVersion\": \"string\",\n      \"connectionStatus\": {\n        \"isAlive\": false\n      },\n      \"acState\": {\n        \"on\": false,\n        \"mode\": \"cool\",\n        \"targetTemperature\": 22,\n        \"temperatureUnit\": \"C\",\n        \"fanLevel\": \"auto\",\n        \"swing\": \"stopped\"\n      },\n      \"measurements\": {\n        \"time\": \"2015-02-08T08:15:37.604Z\",\n        \"temperature\": 23.4,\n        \"humidity\": 48,\n        \"feelsLike\": 23.9,\n        \"tvoc\": 120,\n        \"co2\": 640,\n        \"pm25\": 8,\n        \"rssi\": 5677,\n        \"battery\": 7879.881353646751\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9c5cd3f4-a71a-47cd-aa7f-2d4079ba1dce",
+              "name": "Missing or invalid apiKey.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "pods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fields",
+                      "value": "*"
+                    },
+                    {
+                      "key": "apiKey",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"failure\",\n  \"reason\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1227b883-fc2d-44a8-bf76-f8a1d454b2a4",
+              "name": "Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me",
+                    "pods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fields",
+                      "value": "*"
+                    },
+                    {
+                      "key": "apiKey",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"failure\",\n  \"reason\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://home.sensibo.com/api/v2",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "apiKey"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "query"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "b747d351-48cf-4457-b3c8-39db2d0368a2",
+    "name": "Sensibo AC States Users API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Sensibo API gives developers full control over Sensibo smart AC controllers and air quality monitors (\"pods\") - Sensibo Sky, Air, Air Pro, and Elements. Over REST you can list the devices on an account, read the latest temperature, humidity, and air quality measurements, pull up to seven days of historical measurements, get and set the air conditioner state (power, mode, target temperature, fan, swing), configure the Climate React smart-mode automation, and manage schedules and timers. Authentication is a per-account API key passed as the `apiKey` query parameter, generated at https://home.sensibo.com/me/api. OAuth2 is available for commercial integrations (contact support@sensibo.com). Schedules and timers are exposed by Sensibo as a legacy (\"v1\") surface but are served under the same home.sensibo.com host. This document is grounded in Sensibo's published OpenAPI (sensibo.openapi.yaml) and support documentation; request and response schemas are modeled representatively.\n\nContact Support:\n Name: Sensibo Support\n Email: support@sensibo.com",
+      "type": "text/plain"
+    }
+  }
+}

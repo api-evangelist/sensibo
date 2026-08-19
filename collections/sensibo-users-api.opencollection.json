@@ -1,0 +1,45 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Sensibo AC States Users API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "apiKey",
+      "value": "{{apiKey}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all devices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/users/me/pods",
+            "params": [
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to include in the response, or `*` for all fields."
+              }
+            ]
+          },
+          "docs": "Lists every device (pod) enrolled on the authenticated account. Use the `fields` parameter to control which properties are returned (for example `fields=id,room,acState` or `fields=*` for everything)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

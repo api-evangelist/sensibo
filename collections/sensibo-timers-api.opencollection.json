@@ -1,0 +1,87 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Sensibo AC States Timers API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "apiKey",
+      "value": "{{apiKey}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Timers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the current timer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/timer",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              }
+            ]
+          },
+          "docs": "Returns the active countdown timer for the pod, if any."
+        },
+        {
+          "info": {
+            "name": "Set a timer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/timer",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets a one-shot countdown timer that applies a target AC state after a number of minutes."
+        },
+        {
+          "info": {
+            "name": "Delete a timer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://home.sensibo.com/api/v2/pods/:device_id/timer",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path",
+                "description": "The pod (device) identifier."
+              }
+            ]
+          },
+          "docs": "Clears the active countdown timer for the pod."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
