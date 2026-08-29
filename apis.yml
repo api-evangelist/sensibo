@@ -12,6 +12,18 @@ description: Sensibo builds smart air conditioning controllers and indoor air qu
   managing schedules and timers. Authentication is a per-account API key passed as
   an apiKey query parameter, generated from home.sensibo.com/me/api. OAuth2 is
   available for commercial integrations.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: self-serve
