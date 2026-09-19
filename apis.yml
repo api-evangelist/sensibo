@@ -147,6 +147,8 @@ apis:
   humanURL: https://support.sensibo.com/api/
   baseURL: https://home.sensibo.com/api/v2
   tags:
+  - Schedule
+  tags_raw:
   - Schedules
   properties:
   - type: OpenAPI
