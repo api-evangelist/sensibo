@@ -1,14 +1,7 @@
 {
   "provider": "sensibo",
   "sources": [
-    "sensibo-ac-states-api-openapi.yml",
-    "sensibo-climate-react-api-openapi.yml",
-    "sensibo-devices-api-openapi.yml",
-    "sensibo-historical-data-api-openapi.yml",
-    "sensibo-measurements-api-openapi.yml",
-    "sensibo-schedules-api-openapi.yml",
-    "sensibo-timers-api-openapi.yml",
-    "sensibo-users-api-openapi.yml"
+    "_original/sensibo-openapi.yml"
   ],
   "outputs": [
     "sensibo-ac-states-api-openapi.yml",
@@ -23,6 +16,19 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "sensibo-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "sensibo-ac-states-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sensibo-climate-react-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sensibo-devices-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sensibo-historical-data-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sensibo-measurements-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sensibo-schedules-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sensibo-timers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sensibo-users-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
