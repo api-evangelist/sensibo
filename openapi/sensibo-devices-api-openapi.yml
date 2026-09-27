@@ -77,45 +77,6 @@ components:
           $ref: '#/components/schemas/AcState'
         measurements:
           $ref: '#/components/schemas/Measurement'
-    Error:
-      type: object
-      properties:
-        status:
-          type: string
-          example: failure
-        reason:
-          type: string
-    AcState:
-      type: object
-      description: The state of the air conditioner.
-      properties:
-        'on':
-          type: boolean
-        mode:
-          type: string
-          description: Operating mode.
-          example: cool
-          enum:
-          - cool
-          - heat
-          - fan
-          - dry
-          - auto
-        targetTemperature:
-          type: number
-          example: 22
-        temperatureUnit:
-          type: string
-          enum:
-          - C
-          - F
-          example: C
-        fanLevel:
-          type: string
-          example: auto
-        swing:
-          type: string
-          example: stopped
     Measurement:
       type: object
       description: A sensor reading from a pod.
@@ -150,7 +111,68 @@ components:
           type:
           - number
           - 'null'
+    AcState:
+      type: object
+      description: The state of the air conditioner.
+      properties:
+        'on':
+          type: boolean
+        mode:
+          type: string
+          description: Operating mode.
+          example: cool
+          enum:
+          - cool
+          - heat
+          - fan
+          - dry
+          - auto
+        targetTemperature:
+          type: number
+          example: 22
+        temperatureUnit:
+          type: string
+          enum:
+          - C
+          - F
+          example: C
+        fanLevel:
+          type: string
+          example: auto
+        swing:
+          type: string
+          example: stopped
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: failure
+        reason:
+          type: string
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
+    Fields:
+      name: fields
+      in: query
+      required: false
+      description: Comma-separated list of fields to include in the response, or `*` for all fields.
+      schema:
+        type: string
+        example: '*'
   responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     RateLimited:
       description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
       content:
@@ -163,28 +185,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    Fields:
-      name: fields
-      in: query
-      required: false
-      description: Comma-separated list of fields to include in the response, or `*` for all fields.
-      schema:
-        type: string
-        example: '*'
-    DeviceId:
-      name: device_id
-      in: path
-      required: true
-      description: The pod (device) identifier.
-      schema:
-        type: string
   securitySchemes:
     apiKey:
       type: apiKey

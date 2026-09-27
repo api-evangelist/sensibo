@@ -179,7 +179,28 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimited'
 components:
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
+    ScheduleId:
+      name: schedule_id
+      in: path
+      required: true
+      description: The schedule identifier.
+      schema:
+        type: string
   responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     RateLimited:
       description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
       content:
@@ -192,21 +213,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      properties:
-        status:
-          type: string
-          example: failure
-        reason:
-          type: string
     Schedule:
       type: object
       description: A recurring schedule that applies an AC state.
@@ -259,21 +266,14 @@ components:
         swing:
           type: string
           example: stopped
-  parameters:
-    ScheduleId:
-      name: schedule_id
-      in: path
-      required: true
-      description: The schedule identifier.
-      schema:
-        type: string
-    DeviceId:
-      name: device_id
-      in: path
-      required: true
-      description: The pod (device) identifier.
-      schema:
-        type: string
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: failure
+        reason:
+          type: string
   securitySchemes:
     apiKey:
       type: apiKey

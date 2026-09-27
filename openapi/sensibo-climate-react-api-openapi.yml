@@ -124,28 +124,15 @@ paths:
         '429':
           $ref: '#/components/responses/RateLimited'
 components:
-  responses:
-    RateLimited:
-      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid apiKey.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
   schemas:
-    Error:
-      type: object
-      properties:
-        status:
-          type: string
-          example: failure
-        reason:
-          type: string
     AcState:
       type: object
       description: The state of the air conditioner.
@@ -177,6 +164,14 @@ components:
         swing:
           type: string
           example: stopped
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: failure
+        reason:
+          type: string
     ClimateReact:
       type: object
       description: Climate React (smart mode) configuration.
@@ -199,14 +194,19 @@ components:
           $ref: '#/components/schemas/AcState'
         highTemperatureState:
           $ref: '#/components/schemas/AcState'
-  parameters:
-    DeviceId:
-      name: device_id
-      in: path
-      required: true
-      description: The pod (device) identifier.
-      schema:
-        type: string
+  responses:
+    RateLimited:
+      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid apiKey.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     apiKey:
       type: apiKey
