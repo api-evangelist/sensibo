@@ -56,19 +56,46 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid apiKey.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     RateLimited:
       description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid apiKey.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    Pod:
+      type: object
+      description: A Sensibo device (pod).
+      properties:
+        id:
+          type: string
+          description: The pod identifier used in every other endpoint.
+        room:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Living Room
+        productModel:
+          type: string
+          example: skyv2
+        firmwareVersion:
+          type: string
+        connectionStatus:
+          type: object
+          properties:
+            isAlive:
+              type: boolean
+        acState:
+          $ref: '#/components/schemas/AcState'
+        measurements:
+          $ref: '#/components/schemas/Measurement'
     Measurement:
       type: object
       description: A sensor reading from a pod.
@@ -103,33 +130,6 @@ components:
           type:
           - number
           - 'null'
-    Pod:
-      type: object
-      description: A Sensibo device (pod).
-      properties:
-        id:
-          type: string
-          description: The pod identifier used in every other endpoint.
-        room:
-          type: object
-          properties:
-            name:
-              type: string
-              example: Living Room
-        productModel:
-          type: string
-          example: skyv2
-        firmwareVersion:
-          type: string
-        connectionStatus:
-          type: object
-          properties:
-            isAlive:
-              type: boolean
-        acState:
-          $ref: '#/components/schemas/AcState'
-        measurements:
-          $ref: '#/components/schemas/Measurement'
     AcState:
       type: object
       description: The state of the air conditioner.
@@ -170,13 +170,6 @@ components:
         reason:
           type: string
   parameters:
-    DeviceId:
-      name: device_id
-      in: path
-      required: true
-      description: The pod (device) identifier.
-      schema:
-        type: string
     Fields:
       name: fields
       in: query
@@ -185,6 +178,13 @@ components:
       schema:
         type: string
         example: '*'
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
   securitySchemes:
     apiKey:
       type: apiKey

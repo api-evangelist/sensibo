@@ -92,14 +92,14 @@ paths:
           $ref: '#/components/responses/RateLimited'
 components:
   responses:
-    Unauthorized:
-      description: Missing or invalid apiKey.
+    RateLimited:
+      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    RateLimited:
-      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
+    Unauthorized:
+      description: Missing or invalid apiKey.
       content:
         application/json:
           schema:

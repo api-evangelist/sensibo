@@ -186,14 +186,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid apiKey.
+    RateLimited:
+      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    RateLimited:
-      description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
+    Unauthorized:
+      description: Missing or invalid apiKey.
       content:
         application/json:
           schema:
@@ -214,27 +214,6 @@ components:
       schema:
         type: string
   schemas:
-    Schedule:
-      type: object
-      description: A recurring schedule that applies an AC state.
-      properties:
-        id:
-          type: string
-        isEnabled:
-          type: boolean
-        targetTimeLocal:
-          type: string
-          example: '18:30'
-        recurringDays:
-          type: array
-          items:
-            type: string
-          example:
-          - Monday
-          - Wednesday
-          - Friday
-        acState:
-          $ref: '#/components/schemas/AcState'
     AcState:
       type: object
       description: The state of the air conditioner.
@@ -266,6 +245,27 @@ components:
         swing:
           type: string
           example: stopped
+    Schedule:
+      type: object
+      description: A recurring schedule that applies an AC state.
+      properties:
+        id:
+          type: string
+        isEnabled:
+          type: boolean
+        targetTimeLocal:
+          type: string
+          example: '18:30'
+        recurringDays:
+          type: array
+          items:
+            type: string
+          example:
+          - Monday
+          - Wednesday
+          - Friday
+        acState:
+          $ref: '#/components/schemas/AcState'
     Error:
       type: object
       properties:

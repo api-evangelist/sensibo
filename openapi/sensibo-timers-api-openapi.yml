@@ -103,34 +103,19 @@ paths:
           $ref: '#/components/responses/RateLimited'
 components:
   responses:
-    Unauthorized:
-      description: Missing or invalid apiKey.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     RateLimited:
       description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid apiKey.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Timer:
-      type: object
-      description: A one-shot countdown timer.
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-        minutesFromNow:
-          type: integer
-          example: 30
-        targetTimeLocal:
-          type: string
-        acState:
-          $ref: '#/components/schemas/AcState'
     AcState:
       type: object
       description: The state of the air conditioner.
@@ -162,6 +147,21 @@ components:
         swing:
           type: string
           example: stopped
+    Timer:
+      type: object
+      description: A one-shot countdown timer.
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        minutesFromNow:
+          type: integer
+          example: 30
+        targetTimeLocal:
+          type: string
+        acState:
+          $ref: '#/components/schemas/AcState'
     Error:
       type: object
       properties:

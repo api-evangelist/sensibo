@@ -50,18 +50,34 @@ paths:
           $ref: '#/components/responses/RateLimited'
 components:
   responses:
-    Unauthorized:
-      description: Missing or invalid apiKey.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     RateLimited:
       description: 'Too many requests. Requests are rate limited; a 429 indicates the limit was exceeded. Sending an `Accept-Encoding: gzip` header raises the effective limit.'
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid apiKey.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    Fields:
+      name: fields
+      in: query
+      required: false
+      description: Comma-separated list of fields to include in the response, or `*` for all fields.
+      schema:
+        type: string
+        example: '*'
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: The pod (device) identifier.
+      schema:
+        type: string
   schemas:
     Measurement:
       type: object
@@ -105,22 +121,6 @@ components:
           example: failure
         reason:
           type: string
-  parameters:
-    DeviceId:
-      name: device_id
-      in: path
-      required: true
-      description: The pod (device) identifier.
-      schema:
-        type: string
-    Fields:
-      name: fields
-      in: query
-      required: false
-      description: Comma-separated list of fields to include in the response, or `*` for all fields.
-      schema:
-        type: string
-        example: '*'
   securitySchemes:
     apiKey:
       type: apiKey
