@@ -1,4 +1,4 @@
-# Sensibo (sensibo)
+# Sensibo
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,200 +64,132 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Sensibo builds smart air conditioning controllers and indoor air quality monitors (Sensibo Sky, Air, Air Pro, and Elements) that add app, voice, and API control to existing mini-split, window, and portable AC and heat-pump units. The Sensibo REST API (base `https://home.sensibo.com/api/v2`) gives developers full control over enrolled devices ("pods") - reading temperature, humidity, and air quality measurements, getting and setting the AC state (power, mode, target temperature, fan, swing), configuring the Climate React smart automation, and managing schedules and timers. Authentication is a per-account API key passed as an `apiKey` query parameter, generated at [home.sensibo.com/me/api](https://home.sensibo.com/me/api). OAuth2 is available for commercial integrations.
+Sensibo builds smart air conditioning controllers and indoor air quality monitors (Sensibo Sky, Air, Air Pro, and Elements) that add app, voice, and API control to existing mini-split, window, and portable AC and heat-pump units. The Sensibo REST API (base https://home.sensibo.com/api/v2) gives developers full control over enrolled devices ("pods") - reading temperature, humidity, and air quality measurements, getting and setting the AC state (power, mode, target temperature, fan, swing), configuring the Climate React smart automation, and managing schedules and timers. Authentication is a per-account API key passed as an apiKey query parameter, generated from home.sensibo.com/me/api. OAuth2 is available for commercial integrations.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/sensibo/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/sensibo/refs/heads/main/apis.yml)
+**Areas:** Smart Home · IoT · Air Conditioning · HVAC · Air Quality · Climate Control · Connected Devices
 
-## Tags
+## Sensibo on APIs.io
 
-- Smart Home
-- IoT
-- Air Conditioning
-- HVAC
-- Air Quality
-- Climate Control
-- Connected Devices
+Everything profiled for Sensibo is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/sensibo/](https://apis.io/providers/sensibo/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (8)
 
-- **Created:** 2026-07-03
-- **Modified:** 2026-07-03
+- [Sensibo AC States API](https://apis.io/apis/sensibo/sensibo-ac-states-api/) — Read and command the air conditioner state.
+- [Sensibo Climate React API](https://apis.io/apis/sensibo/sensibo-climate-react-api/) — Smart-mode automation driven by temperature and humidity thresholds.
+- [Sensibo Devices API](https://apis.io/apis/sensibo/sensibo-devices-api/) — Individual device (pod) detail and status.
+- [Sensibo Historical Data API](https://apis.io/apis/sensibo/sensibo-historical-data-api/) — Time-series measurements and the device event log.
+- [Sensibo Measurements API](https://apis.io/apis/sensibo/sensibo-measurements-api/) — Latest temperature, humidity, and air quality readings.
+- [Sensibo Schedules API](https://apis.io/apis/sensibo/sensibo-schedules-api/) — Recurring day-and-time AC state schedules.
+- [Sensibo Timers API](https://apis.io/apis/sensibo/sensibo-timers-api/) — One-shot countdown timers that apply an AC state.
+- [Sensibo Users API](https://apis.io/apis/sensibo/sensibo-users-api/) — Account-level access to the devices enrolled on a Sensibo account.
 
-## APIs
+### Published properties
 
-### Sensibo Users API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-The account entry point. List every device (pod) enrolled on the authenticated Sensibo account via `GET /users/me/pods`, optionally selecting which fields to return with the `fields` query parameter. This is how an integration discovers the pod IDs it will control with the other APIs.
+#### Agentic access (1)
 
-- **Human URL:** [https://support.sensibo.com/api/](https://support.sensibo.com/api/)
-- **Base URL:** `https://home.sensibo.com/api/v2`
+Which operations an agent can call, which act, and which need a human in the loop.
 
-#### Tags
+- [Sensibo Agentic Access](https://apis.io/agentic-access/sensibo/sensibo-agentic-access/)
 
-- Users
-- Account
-- Devices
+#### Collections (9)
 
-#### Properties
+Postman and Open Collection request collections.
 
-- [Documentation](https://support.sensibo.com/api/)
-- [API Reference](https://support.sensibo.com/getting-started/api-documentation/)
-- [OpenAPI](openapi/sensibo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/sensibo.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/sensibo.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Sensibo API](https://apis.io/collections/sensibo/open-sensibo/)
+- [Sensibo AC States API](https://apis.io/collections/sensibo/open-sensibo-ac-states-api/)
+- [Sensibo AC States Climate React API](https://apis.io/collections/sensibo/open-sensibo-climate-react-api/)
+- [Sensibo AC States Devices API](https://apis.io/collections/sensibo/open-sensibo-devices-api/)
+- [Sensibo AC States Historical Data API](https://apis.io/collections/sensibo/open-sensibo-historical-data-api/)
+- [Sensibo AC States Measurements API](https://apis.io/collections/sensibo/open-sensibo-measurements-api/)
+- [Sensibo AC States Schedules API](https://apis.io/collections/sensibo/open-sensibo-schedules-api/)
+- [Sensibo AC States Timers API](https://apis.io/collections/sensibo/open-sensibo-timers-api/)
+- [Sensibo AC States Users API](https://apis.io/collections/sensibo/open-sensibo-users-api/)
 
-### Sensibo Devices API
+#### Security (2)
 
-Retrieve full detail for a single device (pod) via `GET /pods/{device_id}` - product model, room name, connection status, firmware version, capabilities, and the last known AC state and measurements. Use the `fields` parameter to trim the response to only the properties you need.
+Authentication, trust centre, and vulnerability disclosure.
 
-- **Human URL:** [https://support.sensibo.com/api/](https://support.sensibo.com/api/)
-- **Base URL:** `https://home.sensibo.com/api/v2`
+- [Sensibo Authentication](https://apis.io/security/sensibo/sensibo-authentication/)
+- [Sensibo Domain Security](https://apis.io/security/sensibo/sensibo-domain-security/)
 
-#### Tags
+#### Plans and pricing (1)
 
-- Devices
-- Pods
-- Status
+Published plans, tiers and prices.
 
-#### Properties
+- [Sensibo Plans Pricing](https://apis.io/plans/sensibo/sensibo-plans-pricing/)
 
-- [Documentation](https://support.sensibo.com/api/)
-- [OpenAPI](openapi/sensibo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/sensibo.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/sensibo.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Rate limits (1)
 
-### Sensibo AC States API
+Published request limits.
 
-Read and command the air conditioner state. `GET /pods/{device_id}/acStates` returns the current and previous states; `POST` sets a complete new state (on/off, mode, target temperature, fan level, swing); and `PATCH /pods/{device_id}/acStates/{property}` changes a single property such as turning the unit on or bumping the target temperature.
+- [Sensibo Rate Limits](https://apis.io/rate-limits/sensibo/sensibo-rate-limits/)
 
-- **Human URL:** [https://support.sensibo.com/api/](https://support.sensibo.com/api/)
-- **Base URL:** `https://home.sensibo.com/api/v2`
+#### FinOps (1)
 
-#### Tags
+What the API costs to run, by operation.
 
-- AC State
-- Control
-- Power
+- [Sensibo Finops](https://apis.io/finops/sensibo/sensibo-finops/)
 
-#### Properties
+## Where to find this API
 
-- [Documentation](https://support.sensibo.com/api/)
-- [OpenAPI](openapi/sensibo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/sensibo.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/sensibo.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-### Sensibo Measurements API
-
-Read the latest sensor readings for a pod via `GET /pods/{device_id}/measurements` - temperature, relative humidity, feels-like, and on air-quality-capable hardware (Air Pro, Elements) indoor air quality signals such as TVOC, CO2, and particulate matter, plus RSSI and battery.
-
-- **Human URL:** [https://support.sensibo.com/api/](https://support.sensibo.com/api/)
-- **Base URL:** `https://home.sensibo.com/api/v2`
-
-#### Tags
-
-- Measurements
-- Temperature
-- Humidity
-- Air Quality
-
-#### Properties
-
-- [Documentation](https://support.sensibo.com/api/)
-- [OpenAPI](openapi/sensibo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/sensibo.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/sensibo.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### Sensibo Historical Data API
-
-Pull time-series history for a pod. `GET /pods/{device_id}/historicalMeasurements` returns temperature and humidity (and air quality where available) over a requested window of up to seven days, and `GET /pods/{device_id}/events` returns the device event log. Event-log retention depends on the account's Sensibo Plus subscription.
-
-- **Human URL:** [https://support.sensibo.com/api/](https://support.sensibo.com/api/)
-- **Base URL:** `https://home.sensibo.com/api/v2`
-
-#### Tags
-
-- Historical Data
-- Time Series
-- Events
-
-#### Properties
-
-- [Documentation](https://support.sensibo.com/api/)
-- [OpenAPI](openapi/sensibo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/sensibo.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/sensibo.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### Sensibo Climate React API
-
-Configure Climate React, Sensibo's smart-mode automation that turns the AC on or off and adjusts settings when measured temperature or humidity crosses a threshold. `GET /pods/{device_id}/smartmode` reads the configuration, `PUT` enables or disables it, and `POST` sets the low/high thresholds and the AC states to apply at each boundary.
-
-- **Human URL:** [https://support.sensibo.com/api/](https://support.sensibo.com/api/)
-- **Base URL:** `https://home.sensibo.com/api/v2`
-
-#### Tags
-
-- Climate React
-- Smart Mode
-- Automation
-
-#### Properties
-
-- [Documentation](https://support.sensibo.com/api/)
-- [OpenAPI](openapi/sensibo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/sensibo.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/sensibo.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### Sensibo Schedules API
-
-Create and manage recurring schedules that apply a target AC state at a chosen time on chosen days of the week. List and create schedules under `/pods/{device_id}/schedules`, and get, enable/disable, or delete a specific one under `/pods/{device_id}/schedules/{schedule_id}`.
-
-- **Human URL:** [https://support.sensibo.com/api/](https://support.sensibo.com/api/)
-- **Base URL:** `https://home.sensibo.com/api/v2`
-
-#### Tags
-
-- Schedules
-- Automation
-- Scheduling
-
-#### Properties
-
-- [Documentation](https://support.sensibo.com/api/)
-- [OpenAPI](openapi/sensibo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/sensibo.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/sensibo.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### Sensibo Timers API
-
-Set a one-shot countdown timer that applies a target AC state after a number of minutes - the classic "turn the AC off in 30 minutes" behavior. `GET /pods/{device_id}/timer` reads the active timer, `PUT` sets one, and `DELETE` clears it.
-
-- **Human URL:** [https://support.sensibo.com/api/](https://support.sensibo.com/api/)
-- **Base URL:** `https://home.sensibo.com/api/v2`
-
-#### Tags
-
-- Timers
-- Countdown
-- Automation
-
-#### Properties
-
-- [Documentation](https://support.sensibo.com/api/)
-- [OpenAPI](openapi/sensibo-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/sensibo.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/sensibo.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-## Common Properties
-
-- [GitHub Organization](https://github.com/Sensibo)
-- [LinkedIn](https://www.linkedin.com/company/sensibo)
 - [Website](https://sensibo.com)
 - [Documentation](https://support.sensibo.com/api/)
-- [Plans](plans/sensibo-plans-pricing.yml)
-- [Rate Limits](rate-limits/sensibo-rate-limits.yml)
-- [Fin Ops](finops/sensibo-finops.yml)
+- [Blog](https://sensibo.com/blogs/articles.atom)
+- [GitHub](https://github.com/Sensibo)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 27.5** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 50.8 |
+| Contract governance | 0.0 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 32.1 |
+| Access clarity | 7.9 |
+
+**Agent readiness 22.9** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 11.8** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/sensibo/](https://apis.io/providers/sensibo/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Sensibo: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/sensibo/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
